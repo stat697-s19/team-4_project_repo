@@ -52,6 +52,6 @@ Rationale: This would help identify whether child-poverty levels are associated
 with the number of high dropout students, if so, providing a strong indicator 
 for the types of schools most in need of more help with the FRPM.
 
-Note: This compares the column NUMTSTTAKR from act17 to the column TOTAL 
+Note: This compares the column NUMTSTTAKR from act17 to the column DTOT 
 from dropouts17.
 ;
