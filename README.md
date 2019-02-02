@@ -1,6 +1,6 @@
 # team-4_project_repo
 
-Team Nickname
+Team Nickname: Kick-SAS
 
 
 Team Leader: Megan
