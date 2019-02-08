@@ -115,7 +115,7 @@ and setting all cell values to "Text" format
 [Unique ID Schema] The column CDS is a unique id.
 
 ;
-%let inputDataset4DSN = sat15_raw;
+%let inputDataset4DSN = act17_raw;
 %let inputDataset4URL =
 https://github.com/stat697/team-4_project_repo/blob/master/data/act17_edited.xls?raw=true
 ;
@@ -291,10 +291,52 @@ proc sql;
 		    dropouts17_raw
 		where 
 		    substr(CDS_CODE,8, 7) not in ("0000000","0000001")
+			
 	;
 quit;
 
 
+* check act17_raw for bad unique id values, where the column cds is 
+intended to be a primary key;
+
+proc sql;
+    /* check for unique id values that are repeated, missing, or correspond to
+       non-schools; after executing this query, we see that
+       act17_raw_bad_unique_ids only has non-school values of cds that
+       need to be removed */
+    create table act17_raw_bad_uqique_ids as
+	    select 
+		    A.*
+		from
+		    act17_raw as A
+			left join
+			(
+			    select
+				    cds
+					,count(*) as row_count_for_unique_id_value
+				from
+				    act17_raw
+				group by
+				    cds
+			)as B
+			on A.cds= B.cds
+		having
+		    row_count_for_unique_id_value >1
+			or
+			missing(cds)
+			or
+			substr(cds, 8,7) in ("0000000","0000001")
+		;
+    create table act17 as 
+	    select
+		    *
+		from
+		    act17_raw
+		where 
+		    substr(cds,8, 7) not in ("0000000","0000001")
+			
+	;
+quit;
 
 
 
