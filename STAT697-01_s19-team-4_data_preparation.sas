@@ -215,8 +215,9 @@ proc sql;
             School_Code not in ("0000000","0000001")
     ;
 quit;
-* check frpm1617_raw for bad unique id values, where the columns County_Code,
-District_Code, and School_Code are intended to form a composite key;
+* do the same process as frpm1516: first check frpm1617_raw for bad unique id values, where the columns County_Code,
+District_Code, and School_Code are intended to form a composite key, then remove rows with missing unique id components, or with unique ids that
+       do not correspond to schools;;
 proc sql;
 
     create table frpm1617_raw_dups as
