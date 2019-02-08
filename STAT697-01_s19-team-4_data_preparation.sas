@@ -253,6 +253,51 @@ proc sql;
 	;
 quit;
 
+* check dropouts17_raw for bad unique id values, where the column CDS_CODE is 
+intended to be a primary key;
+
+proc sql;
+    /* check for unique id values that are repeated, missing, or correspond to
+       non-schools; after executing this query, we see that
+       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code that
+       need to be removed */
+    create table dropouts17_raw_bad_uqique_ids as
+	    select 
+		    A.*
+		from
+		    dropouts17_raw as A
+			left join
+			(
+			    select
+				    CDS_CODE
+					,count(*) as row_count_for_unique_id_value
+				from
+				    dropouts17_raw
+				group by
+				    CDS_CODE
+			)as B
+			on A.CDS_CODE= B.CDS_CODE
+		having
+		    row_count_for_unique_id_value >1
+			or
+			missing(CDS_CODE)
+			or
+			substr(CDS_CODE, 8,7) in ("0000000","0000001")
+		;
+    create table dropouts17 as 
+	    select
+		    *
+		from
+		    dropouts17_raw
+		where 
+		    substr(CDS_CODE,8, 7) not in ("0000000","0000001")
+	;
+quit;
+
+
+
+
+
 
 
 
