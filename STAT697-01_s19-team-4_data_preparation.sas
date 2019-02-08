@@ -333,15 +333,68 @@ proc sql;
 		from
 		    act17_raw
 		where 
-		    substr(cds,8, 7) not in ("0000000","0000001")
+		    /* ne means not equal to */
+		    substr(cds,8, 7) ne "0000000"
 			
 	;
 quit;
 
 
+* inspect columns of interest in cleaned versions of datasets;
 
+title "Inspect Percent_Eligible_Free_K12 in frpm1516";
+proc sql;
+    select
+	 min(VAR22) as min
+	,max(VAR22) as max
+	,mean(VAR22) as max
+	,median(VAR22) as max
+	,nmiss(VAR22) as missing
+    from
+	frpm1516
+    ;
+quit;
+title;
+title "Inspect Percent_Eligible_Free_K12 in frpm1617";
+proc sql;
+    select
+	 min(VAR20) as min
+	,max(VAR20) as max
+	,mean(VAR20) as max
+	,median(VAR20) as max
+	,nmiss(VAR20) as missing
+    from
+	frpm1617
+    ;
+quit;
+title;
 
+title "Inspect PctGE21, after converting to numeric values, in act17";
+proc sql;
+    select
+	 min(input(PctGE21,best12.)) as min
+	,max(input(PctGE21,best12.)) as max
+	,mean(input(PctGE21,best12.)) as max
+	,median(input(PctGE21,best12.)) as max
+	,nmiss(input(PctGE21,best12.)) as missing
+    from
+	act17
+    ;
+quit;
+title;
 
+title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
+proc sql;
+    select
+	 input(NumTstTakr,best12.) as Number_of_testers
+	,count(*)
+    from
+	act17
+    group by
+	calculated Number_of_testers
+    ;
+quit;
+title;
 
 
 
