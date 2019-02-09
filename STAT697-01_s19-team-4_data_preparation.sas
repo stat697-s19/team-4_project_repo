@@ -396,5 +396,22 @@ proc sql;
 quit;
 title;
 
+title "Inspect TOTAL, after converting to numeric values, in dropouts17";
+proc sql;
+    select
+	 min(DTOT) as min
+	,max(DTOT) as max
+	,mean(DTOT) as max
+	,median(DTOT) as max
+	,nmiss(DTOT) as missing
+    from
+	dropouts17
+    ;
+quit;
+title;
+
+
+
+
 
 
