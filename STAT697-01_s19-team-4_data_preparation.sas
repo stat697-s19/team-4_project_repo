@@ -6,7 +6,8 @@
 * 
 [Dataset 1 Name] frpm1516
 
-[Dataset Description] Student Poverty Free or Reduced Price Meals (FRPM) Data, AY2015-16
+[Dataset Description] Student Poverty Free or Reduced Price Meals (FRPM) Data, 
+AY2015-16
 
 [Experimental Unit Description] California public K-12 schools in AY2015-16
 
@@ -24,7 +25,8 @@ disallowed in SAS variable names, and setting all cell values to "Text" format
 [Data Dictionary] http://www.cde.ca.gov/ds/sd/sd/fsspfrpm.asp
 
 [Unique ID Schema] The columns "County Code", "District Code", and "School Code"
-form a composite key, which together are equivalent to the unique id column CDS_CODE 
+form a composite key, which together are equivalent to the unique id column 
+CDS_CODE 
 in dataset dropouts17, and which together are also equivalent to the unique id 
 column CDS in dataset act17.
 
@@ -33,7 +35,9 @@ column CDS in dataset act17.
 ;
 %let inputDataset1DSN = frpm1516_raw;
 %let inputDataset1URL =
-https://github.com/stat697/team-4_project_repo/blob/master/data/frpm1516_edited.xls?raw=true
+https://github.com/stat697/team-4_project_repo/blob/master/data/frpm1516_edited.
+xls?
+raw=true
 ;
 %let inputDataset1Type = XLS;
 
@@ -41,7 +45,8 @@ https://github.com/stat697/team-4_project_repo/blob/master/data/frpm1516_edited.
 *
 [Dataset 2 Name] frpm1617
 
-[Dataset Description] Student Poverty Free or Reduced Price Meals (FRPM) Data, AY2016-17
+[Dataset Description] Student Poverty Free or Reduced Price Meals (FRPM) Data,
+AY2016-17
 
 [Experimental Unit Description] California public K-12 schools in AY2016-17
 
@@ -56,16 +61,17 @@ reformatting column headers in "FRPM School-Level Data" to remove characters
 disallowed in SAS variable names, and setting all cell values to "Text" format
 [Data Dictionary] http://www.cde.ca.gov/ds/sd/sd/fsspfrpm.asp
 
-[Unique ID Schema] The columns "County Code", "District Code", and "School Code" form 
-a composite key, which together are equivalent to the unique id column CDS_CODE in dataset 
-dropouts17, and which together are also equivalent to the unique id column CDS in dataset 
-act17.
+[Unique ID Schema] The columns "County Code", "District Code", and "School 
+Code" form a composite key, which together are equivalent to the unique id 
+column CDS_CODE in dataset dropouts17, and which together are also equivalent 
+to the unique id column CDS in dataset act17.
 
 
 ;
 %let inputDataset2DSN = frpm1617_raw;
 %let inputDataset2URL =
-https://github.com/stat697/team-4_project_repo/blob/master/data/frpm1617_edited.xls?raw=true
+https://github.com/stat697/team-4_project_repo/blob/master/data/frpm1617_edited.
+xls?raw=true
 ;
 %let inputDataset2Type = XLS;
 
@@ -73,8 +79,8 @@ https://github.com/stat697/team-4_project_repo/blob/master/data/frpm1617_edited.
 *
 [Dataset 3 Name] dropouts17
 
-[Dataset Description] Grade seven through twelve dropouts and enrollment by race/ethnic 
-designation and gender by school, AY2016-17
+[Dataset Description] Grade seven through twelve dropouts and enrollment by 
+race/ethnic designation and gender by school, AY2016-17
 
 [Experimental Unit Description] California public K-12 schools in AY2016-17
 
@@ -82,9 +88,10 @@ designation and gender by school, AY2016-17
 [Number of Features] 20
 
 [Data Source] The file
-http://dq.cde.ca.gov/dataquest/dlfile/dlfile.aspx?cLevel=School&cYear=2016-17&cCat=Dropouts&cPage=filesdropouts
-was downloaded and edited to produce file gradaf15.xls by importing into Excel
-and setting all cell values to "Text" format
+http://dq.cde.ca.gov/dataquest/dlfile/dlfile.aspx?cLevel=School&cYear=2016-17
+&cCat=Dropouts&cPage=filesdropouts was downloaded and edited to produce file 
+gradaf15.xls by importing into Excel and setting all cell values to "Text" 
+format
 
 [Data Dictionary] https://www.cde.ca.gov/ds/sd/sd/fsdropouts.asp
 [Unique ID Schema] The column CDS_CODE is a unique id.
@@ -92,8 +99,8 @@ and setting all cell values to "Text" format
 ;
 %let inputDataset3DSN = dropouts17_raw;
 %let inputDataset3URL =
-https://github.com/stat697/team-4_project_repo/blob/master/data/dropouts17.xls?raw=true
-;
+https://github.com/stat697/team-4_project_repo/blob/master/data/dropouts17
+.xls?raw=true;
 %let inputDataset3Type = XLS;
 
 
@@ -117,8 +124,8 @@ and setting all cell values to "Text" format
 ;
 %let inputDataset4DSN = act17_raw;
 %let inputDataset4URL =
-https://github.com/stat697/team-4_project_repo/blob/master/data/act17_edited.xls?raw=true
-;
+https://github.com/stat697/team-4_project_repo/blob/master/data/act17_edited.
+xls?raw=true;
 %let inputDataset4Type = XLS;
 
 
@@ -215,9 +222,12 @@ proc sql;
             School_Code not in ("0000000","0000001")
     ;
 quit;
-* do the same process as frpm1516: first check frpm1617_raw for bad unique id values, where the columns County_Code,
-District_Code, and School_Code are intended to form a composite key, then remove rows with missing unique id components, or with unique ids that
-       do not correspond to schools;;
+* do the same process as frpm1516: first check frpm1617_raw for bad unique id 
+values, where the columns County_Code, District_Code, and School_Code are 
+intended to form a composite key, then remove rows with missing unique id 
+components, or with unique ids that do not correspond to schools;;
+
+
 proc sql;
 
     create table frpm1617_raw_dups as
