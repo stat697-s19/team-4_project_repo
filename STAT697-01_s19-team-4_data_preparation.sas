@@ -269,8 +269,8 @@ intended to be a primary key;
 proc sql;
     /* check for unique id values that are repeated, missing, or correspond to
        non-schools; after executing this query, we see that
-       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code that
-       need to be removed */
+       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code 
+       thatneed to be removed */
     create table dropouts17_raw_bad_uqique_ids as
 	    select 
 		    A.*
@@ -310,10 +310,10 @@ quit;
 intended to be a primary key;
 
 proc sql;
-    /* check for unique id values that are repeated, missing, or correspond to
-       non-schools; after executing this query, we see that
-       act17_raw_bad_unique_ids only has non-school values of cds that
-       need to be removed */
+    /* check for unique id values that are repeated, missing, or 
+       correspond to non-schools; after executing this query, we see 
+       that act17_raw_bad_unique_ids only has non-school values of 
+       cds that need to be removed */
     create table act17_raw_bad_uqique_ids as
 	    select 
 		    A.*
