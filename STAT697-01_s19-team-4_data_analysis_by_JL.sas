@@ -44,7 +44,7 @@ to the column PCTGE1500 from act17.
 
 Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
 be excluded from this analysis, since they are potentially missing data values,
-and missing values of PCTGE1500 should also be excluded.
+and missing values of PctGE21 should also be excluded.
 ;
 
 
@@ -62,6 +62,6 @@ for the types of schools most in need of more help with the FRPM.
 Note: This compares the column NUMTSTTAKR from act17 to the column DTOT 
 from dropouts17.
 
-Limitations: Values of NUMTSTTAKR and TOTAL equal to zero should be excluded
+Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
 from this analysis, since they are potentially missing data values.
 ;
