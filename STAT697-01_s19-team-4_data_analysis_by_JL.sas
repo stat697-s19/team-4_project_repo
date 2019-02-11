@@ -22,6 +22,9 @@ outreach based upon increasing and decreasing child-poverty levels.
 
 Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1516 
 to the column of the same name from frpm1617.
+
+Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
+be excluded from this analysis, since they are potentially missing data values 
 ;
 
 
@@ -38,6 +41,10 @@ and also want to pursue further study.
 
 Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1617 
 to the column PCTGE1500 from act17.
+
+Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
+be excluded from this analysis, since they are potentially missing data values,
+and missing values of PctGE21 should also be excluded.
 ;
 
 
@@ -54,4 +61,7 @@ for the types of schools most in need of more help with the FRPM.
 
 Note: This compares the column NUMTSTTAKR from act17 to the column DTOT 
 from dropouts17.
+
+Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
+from this analysis, since they are potentially missing data values.
 ;
