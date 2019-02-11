@@ -21,7 +21,6 @@ worksheet "Title Page", deleting row 1 from worksheet "FRPM School-Level Data",
 reformatting column headers in "FRPM School-Level Data" to remove characters
 disallowed in SAS variable names, and setting all cell values to "Text" format
 
-
 [Data Dictionary] http://www.cde.ca.gov/ds/sd/sd/fsspfrpm.asp
 
 [Unique ID Schema] The columns "County Code", "District Code", and "School 
@@ -219,9 +218,9 @@ proc sql;
 quit;
 
 * do the same process as frpm1516: first check frpm1617_raw for bad unique 
-    id values, where the columns County_Code, District_Code, and School_Code are 
-    intended to form a composite key, then remove rows with missing unique id 
-    components, or with unique ids that do not correspond to schools;
+    id values, where the columns County_Code, District_Code, and School_Code 
+    are intended to form a composite key, then remove rows with missing unique 
+    id components, or with unique ids that do not correspond to schools;
 
 proc sql;
     create table frpm1617_raw_dups as
@@ -414,9 +413,3 @@ proc sql;
     ;
 quit;
 title;
-
-
-
-
-
-
