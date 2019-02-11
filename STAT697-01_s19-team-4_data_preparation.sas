@@ -169,103 +169,7 @@ options fullstimer;
 %loadDatasets
 
 
-*******************************************************************************;
-**************DATA CLEANING AND EDA FOR ACT17_RAW DATASET**********************;
-*******************************************************************************;
-*the columns in this dataset are: cds, ccode, cdcode, scode, rtype, sname, 
-dname, cname, Enroll12, NumTstTakr, AvgScrEng, AvgScrRead, AvgScrMath, 
-AvgScrSci, NumGE21, PctGE21;
-*check what datatype the columns are in and then convert to numeric for 
-the relevant columns;
-proc contents data = act17_raw;
-run;
-data act17_raw; set act17_raw;
-    NumEnroll = input(Enroll12, best8.); * Convert character to numeric;
-	NumTak = input(NumTstTakr, best12.);
-	AvgEng = input(AvgScrEng, best12.);
-	AvgRead = input(AvgScrRead, best12.);
-    AvgMath = input(AvgScrMath, best12.);
-	AvgSci = input(AvgScrSci, best12.);
-	NumGE = input(NumGE21, best12.);
-	PctGE = input(PctGE21, best12.);
-run;
-proc contents data=act17_raw;
-run;
 
-* check act17_raw for bad unique id values, where the column CDS is intended
-to be a primary key;
-proc sql;
-    /* check for unique id values that are repeated, missing, or correspond to
-       non-schools;
-        */
-proc sql;
-select count(distinct cds) as cds_count_id
-    from act17_raw;
-/*here we see that the amount of unique id's are equal to the number of rows, 
-(both equal 2252)so the all the cds values are unique*/
-
-    create table act17_unusual_ids as
-        select
-            ACT.*
-        from
-            act17_raw as ACT
-            left join
-            (
-                select
-                     cds
-                    ,count(*) as row_count_id
-                from
-                    act17_raw
-                group by
-                    cds
-            ) as B
-            on ACT.cds=B.cds
-        having
-            /* capture rows corresponding to repeated primary key values */
-            row_count_id > 1
-            or
-            /* capture rows corresponding to missing primary key values */
-            missing(cds)
-            or
-            /* capture rows corresponding to non-school primary key values */
-            substr(CDS,8,7) in ("00000000000000","01000000000000")
-		order by cds
-    ;
-
-	/*from visual inspection of this table, there are some values of 
-	enrollment that are far beyond the limit of most schools*/
-
-
-
-    /* removing rows in which schools are too large(greater than 10000 people).
-	we can be sure the new dataset act17 will have no made up schools, and all 
-	unique id values can serve as a primary key as schools */
-    create table act17 as
-        select
-            *
-        from
-	    act17_raw
-	where NumEnroll <10000
-	   
-    ;
-quit;
-
-*This is a table with means, standard deviations, n, min, and max for 
-the numeric variables;
-title "Inspect Means of Numerical Variables in act17";
-proc means data = act17_raw;
-var NumEnroll NumTak AvgEng AvgRead AvgMath AvgSci NumGE PctGE;
-run;
-title;
-
-*here is a table that gets the average math scores from schools in each;
-title "Inspect Average Math Scores per County in act17";
-proc sql;
-	select ccode, avg(AvgMath) as avgmath
-	from act17_raw
-	group by ccode;
-  title;
-=======
 * check frpm1516_raw for bad unique id values, where the columns County_Code,
 District_Code, and School_Code are intended to form a composite key;
 proc sql;
@@ -289,13 +193,13 @@ proc sql;
         having
             row_count_for_unique_id_value > 1
     ;
-    /* remove rows with missing unique id components, or with unique ids that
-       do not correspond to schools; after executing this query, the new
-       dataset frpm1516 will have no duplicate/repeated unique id values,
-       and all unique id values will correspond to our experimenal units of
-       interest, which are California Public K-12 schools; this means the 
-       columns County_Code, District_Code, and School_Code in frpm1516 are 
-       guaranteed to form a composite key */
+    /* remove rows with missing unique id components, or with unique ids that do
+	   not correspond to schools; after executing this query, the new dataset 
+	   frpm1516 will have no duplicate/repeated unique id values,and all unique 
+	   id values will correspond to our experimenal units of interest, which are
+	   California Public K-12 schools; this means the columns County_Code, 
+	   District_Code, and School_Code in frpm1516 are guaranteed to form a 
+	   composite key */
     create table frpm1516 as
         select
             *
@@ -314,10 +218,10 @@ proc sql;
     ;
 quit;
 
-* do the same process as frpm1516: first check frpm1617_raw for bad unique 
-    id values, where the columns County_Code, District_Code, and School_Code 
-    are intended to form a composite key, then remove rows with missing unique 
-    id components, or with unique ids that do not correspond to schools;
+* do the same process as frpm1516: first check frpm1617_raw for bad unique id 
+  values, where the columns County_Code, District_Code, and School_Code are 
+  intended to form a composite key, then remove rows with missing unique id 
+  components, or with unique ids that do not correspond to schools;
 
 proc sql;
     create table frpm1617_raw_dups as
@@ -353,13 +257,13 @@ quit;
 
 
 * check dropouts17_raw for bad unique id values, where the column CDS_CODE is 
-intended to be a primary key;
+  intended to be a primary key;
 
 proc sql;
     /* check for unique id values that are repeated, missing, or correspond to
        non-schools; after executing this query, we see that 
-       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code 
-       thatneed to be removed */
+       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code that
+       need to be removed */
     create table dropouts17_raw_bad_uqique_ids as
 	    select 
 		    A.*
@@ -395,14 +299,14 @@ proc sql;
 quit;
 
 
-* check act17_raw for bad unique id values, where the column cds is 
-intended to be a primary key;
+* check act17_raw for bad unique id values, where the column cds is intended to
+  be a primary key;
 
 proc sql;
-    /* check for unique id values that are repeated, missing, or 
-       correspond to non-schools; after executing this query, we see 
-       that act17_raw_bad_unique_ids only has non-school values of 
-       cds that need to be removed */
+    /* check for unique id values that are repeated, missing, or correspond to 
+       non-schools; after executing this query, we see that 
+       act17_raw_bad_unique_ids only has non-school values of cds that need to 
+       be removed */
     create table act17_raw_bad_uqique_ids as
 	    select 
 		    A.*
@@ -425,7 +329,7 @@ proc sql;
 			missing(cds)
 			or
 			substr(cds, 8,7) in ("0000000","0000001")
-	;
+		;
     create table act17 as 
 	    select
 		    *
@@ -470,19 +374,7 @@ proc sql;
 quit;
 title;
 
-title "Inspect PctGE21, after converting to numeric values, in act17";
-proc sql;
-    select
-	 min(input(PctGE21,best12.)) as min
-	,max(input(PctGE21,best12.)) as max
-	,mean(input(PctGE21,best12.)) as mean
-	,median(input(PctGE21,best12.)) as med
-	,nmiss(input(PctGE21,best12.)) as missing
-    from
-	act17
-    ;
-quit;
-title;
+
 
 title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
 proc sql;
@@ -496,6 +388,7 @@ proc sql;
     ;
 quit;
 title;
+
 
 title "Inspect TOTAL, after converting to numeric values, in dropouts17";
 proc sql;
