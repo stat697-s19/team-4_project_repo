@@ -169,7 +169,6 @@ options fullstimer;
 %loadDatasets
 
 
-
 * check frpm1516_raw for bad unique id values, where the columns County_Code,
 District_Code, and School_Code are intended to form a composite key;
 proc sql;
@@ -217,6 +216,7 @@ proc sql;
             School_Code not in ("0000000","0000001")
     ;
 quit;
+
 
 * do the same process as frpm1516: first check frpm1617_raw for bad unique id 
   values, where the columns County_Code, District_Code, and School_Code are 
@@ -373,7 +373,6 @@ proc sql;
     ;
 quit;
 title;
-
 
 
 title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
