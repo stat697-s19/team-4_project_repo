@@ -301,45 +301,91 @@ quit;
 * check act17_raw for bad unique id values, where the column cds is 
 intended to be a primary key;
 
+*the columns in this dataset are: cds, ccode, cdcode, scode, rtype, sname, 
+dname, cname, Enroll12, NumTstTakr, AvgScrEng, AvgScrRead, AvgScrMath, 
+AvgScrSci, NumGE21, PctGE21;
+*check what datatype the columns are in and then convert to numeric for 
+the relevant columns;
+proc contents data = act17_raw;
+run;
+data act17_raw; set act17_raw;
+    NumEnroll = input(Enroll12, best8.); * Convert character to numeric;
+	NumTak = input(NumTstTakr, best12.);
+	AvgEng = input(AvgScrEng, best12.);
+	AvgRead = input(AvgScrRead, best12.);
+    AvgMath = input(AvgScrMath, best12.);
+	AvgSci = input(AvgScrSci, best12.);
+	NumGE = input(NumGE21, best12.);
+	PctGE = input(PctGE21, best12.);
+run;
+proc contents data=act17_raw;
+run;
+
+* check act17_raw for bad unique id values, where the column CDS is intended
+to be a primary key;
 proc sql;
-    /* check for unique id values that are repeated, missing, or 
-       correspond to non-schools; after executing this query, we see 
-       that act17_raw_bad_unique_ids only has non-school values of 
-       cds that need to be removed */
-    create table act17_raw_bad_uqique_ids as
-	    select 
-		    A.*
-		from
-		    act17_raw as A
-			left join
-			(
-			    select
-				    cds
-					,count(*) as row_count_for_unique_id_value
-				from
-				    act17_raw
-				group by
-				    cds
-			)as B
-			on A.cds= B.cds
-		having
-		    row_count_for_unique_id_value >1
-			or
-			missing(cds)
-			or
-			substr(cds, 8,7) in ("0000000","0000001")
-	;
-    create table act17 as 
-	    select
-		    *
-		from
-		    act17_raw
-		where 
-		    /* ne means not equal to */
-		    substr(cds,8, 7) ne "0000000"
-			
-	;
+    /* check for unique id values that are repeated, missing, or correspond to
+       non-schools;
+        */
+proc sql;
+select count(distinct cds) as cds_count_id
+    from act17_raw;
+/*here we see that the amount of unique id's are equal to the number of rows, 
+(both equal 2252)so the all the cds values are unique*/
+
+    create table act17_unusual_ids as
+        select
+            ACT.*
+        from
+            act17_raw as ACT
+            left join
+            (
+                select
+                     cds
+                    ,count(*) as row_count_id
+                from
+                    act17_raw
+                group by
+                    cds
+            ) as B
+            on ACT.cds=B.cds
+        having
+            /* capture rows corresponding to repeated primary key values */
+            row_count_id > 1
+            or
+            /* capture rows corresponding to missing primary key values */
+            missing(cds)
+            or
+            /* capture rows corresponding to non-school primary key values */
+            substr(CDS,8,7) in ("00000000000000","01000000000000")
+		order by cds
+    ;
+
+	/*from visual inspection of this table, there are some values of 
+	enrollment that are far beyond the limit of most schools*/
+
+
+
+    /* removing rows in which schools are too large(greater than 10000 people).
+	we can be sure the new dataset act17 will have no made up schools, and all 
+	unique id values can serve as a primary key as schools */
+    create table act17 as
+        select
+            *
+        from
+	    act17_raw
+	where NumEnroll <10000
+	   
+    ;
 quit;
+
+*This is a table with means, standard deviations, n, min, and max for 
+the numeric variables;
+title "Inspect Means of Numerical Variables in act17";
+proc means data = act17_raw;
+var NumEnroll NumTak AvgEng AvgRead AvgMath AvgSci NumGE PctGE;
+run;
+title;
 
 
 * inspect columns of interest in cleaned versions of datasets;
@@ -374,6 +420,7 @@ quit;
 title;
 
 title "Inspect PctGE21, after converting to numeric values, in act17";
+
 proc sql;
     select
 	 min(input(PctGE21,best12.)) as min
