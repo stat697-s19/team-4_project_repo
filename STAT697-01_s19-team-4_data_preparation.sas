@@ -374,20 +374,7 @@ proc sql;
 quit;
 title;
 
-title "Inspect PctGE21, after converting to numeric values, in act17";
 
-proc sql;
-    select
-	 min(input(PctGE21,best12.)) as min
-	,max(input(PctGE21,best12.)) as max
-	,mean(input(PctGE21,best12.)) as mean
-	,median(input(PctGE21,best12.)) as med
-	,nmiss(input(PctGE21,best12.)) as missing
-    from
-	act17
-    ;
-quit;
-title;
 
 title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
 proc sql;
