@@ -364,7 +364,7 @@ proc sql;
 		group by CDS_CODE;
 
 * inspect columns of interest in cleaned versions of datasets;
-    
+    /*  
 
     title "Inspect Percent_Eligible_Free_K12 in frpm1516";
 
@@ -438,7 +438,7 @@ proc sql;
         ;
     quit;
     title;
-
+    */
 
 
 * combine act17 and drop17 horizontally using a data-step match-merge;
