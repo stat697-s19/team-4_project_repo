@@ -343,9 +343,28 @@ proc sql;
 	;
 quit;
 
+* edit dropouts17 into distinct CDS_CODE also add the grade seven and grade
+  eight into the total enrollment and total drop number individually, then 
+  name the new work drop17;
+
+ data newdrop;
+    set dropouts17;
+	TE = E7+E8+ ETOT;
+	TD = D7+D8+ DTOT;
+run;
+
+proc print data=newdrop;
+    var CDS_CODE TE TD;
+run;
+
+proc sql;
+    create table drop17 as
+    select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
+	    from newdrop
+		group by CDS_CODE;
 
 * inspect columns of interest in cleaned versions of datasets;
-    /*
+    
 
     title "Inspect Percent_Eligible_Free_K12 in frpm1516";
 
@@ -391,40 +410,36 @@ quit;
     title;
 
 
-    title "Inspect TOTAL, after converting to numeric values, in dropouts17";
+    title "Inspect TOTAL dropout, after converting to numeric values, in drop17";
     proc sql;
         select
-	     min(DTOT) as min
-	    ,max(DTOT) as max
-	    ,mean(DTOT) as mean
-	    ,median(DTOT) as med
-	    ,nmiss(DTOT) as missing
+	     min(TTD) as min
+	    ,max(TTD) as max
+	    ,mean(TTD) as mean
+	    ,median(TTD) as med
+	    ,nmiss(TTD) as missing
         from
-	    dropouts17
+	    drop17
         ;
     quit;
     title;
-    */
 
-* edit dropouts17 into distinct CDS_CODE also add the grade seven and grade
-  eight into the total enrollment and total drop number individually, then 
-  name the new work drop17;
+    title "Inspect TOTAL enrollment, after converting to numeric values, in drop17";
+    
+    proc sql;
+        select
+	     min(TTE) as min
+	    ,max(TTE) as max
+	    ,mean(TTE) as mean
+	    ,median(TTE) as med
+	    ,nmiss(TTE) as missing
+        from
+	    drop17
+        ;
+    quit;
+    title;
 
- data newdrop;
-    set dropouts17;
-	TE = E7+E8+ ETOT;
-	TD = D7+D8+ DTOT;
-run;
 
-proc print data=newdrop;
-    var CDS_CODE TE TD;
-run;
-
-proc sql;
-    create table drop17 as
-    select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
-	    from newdrop
-		group by CDS_CODE;
 
 * combine act17 and drop17 horizontally using a data-step match-merge;
 * note: After running the data step and proc sort step below several times
@@ -433,7 +448,7 @@ proc sql;
   about 1.8 MB of memory (1100 KB for the data step vs. 1800 KB for the
   proc sort step) on the computer they were tested on;
 
-data act_and_dropout17_v1;
+data act_and_drop17_v1;
     retain
 	    CDS_code
 		School
@@ -442,5 +457,5 @@ data act_and_dropout17_v1;
 		Number_of_Course_Comleters
 	;
 	keep
-	    
+	  
 
