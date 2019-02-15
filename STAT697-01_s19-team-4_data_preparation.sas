@@ -263,8 +263,8 @@ quit;
 proc sql;
     /* check for unique id values that are repeated, missing, or correspond to
        non-schools; after executing this query, we see that 
-       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code that
-       need to be removed */
+       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code 
+       that need to be removed */
     create table dropouts17_raw_bad_uqique_ids as
 	    select 
 		    A.*
@@ -343,25 +343,29 @@ proc sql;
 	;
 quit;
 
-* edit dropouts17 into distinct CDS_CODE also add the grade seven and grade
+ 
+* because the numer of the total enrollment and dropout is not including the 
+  grade seven and grade eight, also the total number of the enrollment and 
+  dropout is saprate by ehic and gender, we should edit the dropouts17 first;
+* edit dropouts17into distinct CDS_CODE also add the grade seven and grade
   eight into the total enrollment and total drop number individually, then 
   name the new work drop17;
 
- data newdrop;
-    set dropouts17;
-	TE = E7+E8+ ETOT;
-	TD = D7+D8+ DTOT;
-run;
-
-proc print data=newdrop;
-    var CDS_CODE TE TD;
-run;
+ proc sql;
+    create table drop17_ as
+    select CDS_CODE, 
+           E7+E8+ ETOT as TE,
+           D7+D8+ DTOT  as TD 
+	    from dropouts17;
 
 proc sql;
     create table drop17 as
     select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
-	    from newdrop
+	    from drop17_
 		group by CDS_CODE;
+ 
+quit;
+
 
 * inspect columns of interest in cleaned versions of datasets;
     /*  
@@ -444,8 +448,8 @@ proc sql;
 * combine act17 and drop17 horizontally using a data-step match-merge;
 * note: After running the data step and proc sort step below several times
   and averaging the fullstimer output in the system log, they tend to take
-  about 0.04 seconds of combined "real time" to execute and a maximum of
-  about 1.8 MB of memory (1100 KB for the data step vs. 1800 KB for the
+  about 0.06 seconds of combined "real time" to execute and a maximum of
+  about 1.2 MB of memory (990 KB for the data step vs. 2895 KB for the
   proc sort step) on the computer they were tested on;
 
 data act_and_drop17_v1;
@@ -453,9 +457,80 @@ data act_and_drop17_v1;
 	    CDS_code
 		School
 		District
-		Number_of_SAT_Takers
-		Number_of_Course_Comleters
+		Number_of_ACT_Takers
+		Number_Dropout
+        Number_Erollment
 	;
 	keep
-	  
+	    CDS_code
+		School
+		District
+		Number_of_ACT_Takers
+		Number_Dropout
+        Number_Erollment
+    ;
+   merge
+        drop17(
+            rename=(
+			TTD = Number_Dropout
+			TTE = Number_Erollment
+                    )
+              ) 
+
+        act17(
+            rename=(
+			cds = CDS_code
+			sname = School
+			dname= District
+		
+                    )
+             )
+;
+    by  CDS_code;
+    Number_of_ACT_Takers=input(NumTstTakr, best12.);
+run; 
+
+proc sort data=act_and_drop17_v1;
+    by CDS_code;
+run;
+
+* combine act17 and drop17 horizontally using proc sql;
+* note: After running the proc sql step below several times and averaging
+  the fullstimer output in the system log, they tend to take about 0.04
+  seconds of "real time" to execute and about 6760k of memory on the computer
+  they were tested on. Consequently, the proc sql step appears to take roughly
+  the same amount of time to execute as the combined data step and proc sort
+  steps above, but to use roughly twice times as much memory;
+
+proc sql;
+    create table act_and_drop17_v2 as
+        select
+             coalesce(A.CDS,B.CDS_Code) as CDS_Code
+            ,coalesce(A.sname) as School
+            ,coalesce(A.dname) as District
+            ,input(A.NumTstTakr,best12.) as Number_of_ACT_Takers
+            ,coalesce(B.TTD) as Number_Dropout
+			,coalesce(B.TTE) as Number_Erollment
+        from
+            act17 as A
+            full join
+            drop17 as B
+            on A.CDS=B.CDS_Code
+        order by
+            CDS_Code
+    ;
+quit;
+
+
+* verify that act_and_drop17_v1 and act_and_drop17_v2 are identical;
+proc compare
+        base=act_and_drop17_v1
+        compare=act_and_drop17_v2
+        novalues
+    ;
+run;
+
+
+
+
 
