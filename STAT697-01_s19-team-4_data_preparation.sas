@@ -345,62 +345,63 @@ quit;
 
 
 * inspect columns of interest in cleaned versions of datasets;
+    /*
 
-title "Inspect Percent_Eligible_Free_K12 in frpm1516";
+    title "Inspect Percent_Eligible_Free_K12 in frpm1516";
 
-proc sql;
-    select
-	 min(VAR22) as min
-	,max(VAR22) as max
-	,mean(VAR22) as mean
-	,median(VAR22) as med
-	,nmiss(VAR22) as missing
-    from
-	frpm1516
-    ;
-quit;
-title;
+    proc sql;
+        select
+	     min(VAR22) as min
+	    ,max(VAR22) as max
+	    ,mean(VAR22) as mean
+	    ,median(VAR22) as med
+	    ,nmiss(VAR22) as missing
+        from
+	    frpm1516
+        ;
+    quit;
+    title;
 
-title "Inspect Percent_Eligible_Free_K12 in frpm1617";
-proc sql;
-    select
-	 min(VAR20) as min
-	,max(VAR20) as max
-	,mean(VAR20) as mean
-	,median(VAR20) as med
-	,nmiss(VAR20) as missing
-    from
-	frpm1617
-    ;
-quit;
-title;
-
-
-title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
-proc sql;
-    select
-	 input(NumTstTakr,best12.) as Number_of_testers
-	,count(*)
-    from
-	act17
-    group by
-	calculated Number_of_testers
-    ;
-quit;
-title;
+    title "Inspect Percent_Eligible_Free_K12 in frpm1617";
+    proc sql;
+        select
+	     min(VAR20) as min
+	    ,max(VAR20) as max
+	    ,mean(VAR20) as mean
+	    ,median(VAR20) as med
+	    ,nmiss(VAR20) as missing
+        from
+	    frpm1617
+        ;
+    quit;
+    title;
 
 
-title "Inspect TOTAL, after converting to numeric values, in dropouts17";
-proc sql;
-    select
-	 min(DTOT) as min
-	,max(DTOT) as max
-	,mean(DTOT) as mean
-	,median(DTOT) as med
-	,nmiss(DTOT) as missing
-    from
-	dropouts17
-    ;
-quit;
-title;
+    title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
+    proc sql;
+        select
+	     input(NumTstTakr,best12.) as Number_of_testers
+	    ,count(*)
+        from
+	    act17
+        group by
+	    calculated Number_of_testers
+        ;
+    quit;
+    title;
 
+
+    title "Inspect TOTAL, after converting to numeric values, in dropouts17";
+    proc sql;
+        select
+	     min(DTOT) as min
+	    ,max(DTOT) as max
+	    ,mean(DTOT) as mean
+	    ,median(DTOT) as med
+	    ,nmiss(DTOT) as missing
+        from
+	    dropouts17
+        ;
+    quit;
+    title;
+    */
