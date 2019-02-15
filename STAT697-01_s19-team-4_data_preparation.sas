@@ -405,3 +405,42 @@ quit;
     quit;
     title;
     */
+
+* edit dropouts17 into distinct CDS_CODE also add the grade seven and grade
+  eight into the total enrollment and total drop number individually, then 
+  name the new work drop17;
+
+ data newdrop;
+    set dropouts17;
+	TE = E7+E8+ ETOT;
+	TD = D7+D8+ DTOT;
+run;
+
+proc print data=newdrop;
+    var CDS_CODE TE TD;
+run;
+
+proc sql;
+    create table drop17 as
+    select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
+	    from newdrop
+		group by CDS_CODE;
+
+* combine act17 and drop17 horizontally using a data-step match-merge;
+* note: After running the data step and proc sort step below several times
+  and averaging the fullstimer output in the system log, they tend to take
+  about 0.04 seconds of combined "real time" to execute and a maximum of
+  about 1.8 MB of memory (1100 KB for the data step vs. 1800 KB for the
+  proc sort step) on the computer they were tested on;
+
+data act_and_dropout17_v1;
+    retain
+	    CDS_code
+		School
+		District
+		Number_of_SAT_Takers
+		Number_of_Course_Comleters
+	;
+	keep
+	    
+
