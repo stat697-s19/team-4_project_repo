@@ -81,9 +81,9 @@ race/ethnic designation and gender by school, AY2016-17
 [Number of Features] 20
 
 [Data Source] The file
-http://dq.cde.ca.gov/dataquest/dlfile/dlfile.aspx?cLevel=School&cYear=2016-17&cCat=Dropouts&cPage=filesdropouts
-was downloaded and edited to produce file gradaf15.xls by importing into 
-Excel and setting all cell values to "Text" format
+http://dq.cde.ca.gov/dataquest/dlfile/dlfile.aspx?cLevel=School&cYear=2016-17&cCat
+=Dropouts&cPage=filesdropouts was downloaded and edited to produce file gradaf15.xls
+by importing into Excel and setting all cell values to "Text" format
 
 [Data Dictionary] https://www.cde.ca.gov/ds/sd/sd/fsdropouts.asp
 
