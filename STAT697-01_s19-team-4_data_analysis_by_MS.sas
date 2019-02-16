@@ -4,7 +4,8 @@
 *******************************************************************************;
 
 * set relative file import path to current directory (using standard SAS trick);
-X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
+X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget
+(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
 
 * load external file that will generate final analytic file;
 %include '.\STAT697-01_s19_team_4_data_preparation.sas';
@@ -17,8 +18,9 @@ Question: Does gender or ethnic category change this?
 Rationale:  There may be hidden biases that instructor and the administration 
 needs to address with groups that have a higher dropout rate.
 Note: A column for dropout rate (for each gender/ethnicity) would be created 
-with the E(for each grade/ethnicity) column and the D(for each grade/ethnicity)
-column for each grade level from the dropouts17_raw dataset. 
+with the E(for each grade/ethnicity) column and the D
+(for each grade/ethnicity) column for each grade level from the dropouts17_raw
+dataset. 
 ;
 
 
