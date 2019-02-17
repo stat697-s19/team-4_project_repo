@@ -73,3 +73,68 @@ values correspond with schools that may not perform well. An additional analysis
 should be done on schools that have null values in this column. They won't be 
 done in the primary analysis because they need to be filtered out. 
 ;
+
+*here, I made a column that has the total dropout rate;
+data dropouts17;
+   set dropouts17;
+   droprate = DTOT / ETOT;
+run;
+
+/*the data preparation file is repeated in order to include the new column for 
+the dropout rate in the analysis*/
+
+proc sql;
+    create table act_dropout as
+        select
+        coalesce(A.CDS,B.CDS_Code) as CDS_Code
+		,coalesce(A.PctGE) as ActAvg
+        ,coalesce(B.droprate) as DropoutRate
+		,coalesce(A.sname) as School
+        ,coalesce(A.dname) as District
+        from
+            act17 as A
+            full join
+            dropouts17 as B
+            on A.CDS=B.CDS_Code
+		where droprate is not missing and pctge is not missing
+	
+        order by
+            CDS_Code
+    ;
+quit;
+
+/* Now that the data is merged, we can look at the results. In order to avoid 
+regression analysis, we can make levels of  performance, starting with schools 
+that have no dropouts */
+
+*no dropouts;
+proc sql outobs=10;
+    select
+         DropoutRate,
+		 ActAvg,
+		 avg(ActAvg) as avg,
+		 std(ActAvg) as sd
+    from
+        act_dropout
+	where DropoutRate =0
+  
+    ;
+quit;
+
+
+*yes dropouts;
+proc sql outobs=10;
+    select
+         DropoutRate,
+		 ActAvg,
+		 avg(ActAvg) as avg,
+		 std(ActAvg) as sd
+    from
+        act_dropout
+	where DropoutRate > 0.00001
+
+    ;
+quit;
+/*we see that there is, on average,4 more percent of students that pass get 
+higher than 21 on the ACT in schools that have no students dropping out. */
+
