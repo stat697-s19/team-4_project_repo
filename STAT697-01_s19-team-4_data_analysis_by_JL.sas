@@ -59,9 +59,56 @@ Rationale: This would help identify whether child-poverty levels are associated
 with the number of high dropout students, if so, providing a strong indicator 
 for the types of schools most in need of more help with the FRPM.
 
-Note: This compares the column NUMTSTTAKR from act17 to the column DTOT 
-from dropouts17.
+Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE 
+from drop17.
 
 Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
 from this analysis, since they are potentially missing data values.
 ;
+
+* calculate the first 10 school that the drop rate is lowest;
+proc sql outobs=10;
+    select
+         School
+        ,District
+        ,Number_of_ACT_Takers /* NumTstTakr from act17 */
+        ,Number_Dropout /* TTD from drop17 */
+		,Number_Erollment/* TTE from drop17*/
+        ,Number_Erollment - Number_Dropout
+         AS Difference
+        ,(calculated Difference)/Number_Erollment
+         AS Percent_Difference format percent12.1
+    from
+        act_and_drop17_v2
+    where
+        Number_Erollment > 0
+        and
+        Number_Dropout > 0
+    order by
+        Difference desc
+    ;
+quit;
+* calculate the first 10 school that the taking ACT rate is hight;
+proc sql outobs=10;
+    select
+         School
+        ,District
+        ,Number_of_ACT_Takers /* NumTstTakr from act17 */
+        ,Number_Dropout /* TTD from drop17 */
+		,Number_Erollment/* TTE from drop17*/
+        ,Number_Erollment - Number_of_ACT_Takers
+         AS Difference
+        ,(calculated Difference)/Number_Erollment
+         AS Percent_Difference format percent12.1
+    from
+        act_and_drop17_v2
+    where
+        Number_Erollment > 0
+        and
+        Number_Dropout > 0
+		and
+        Number_of_ACT_Takers >0
+    order by
+        Difference desc
+    ;
+quit;
