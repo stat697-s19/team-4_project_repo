@@ -368,6 +368,144 @@ quit;
 
 
 * inspect columns of interest in cleaned versions of datasets;
+
+	/*
+	title "Inspect Percent_Eligible_Free_K12 in frpm1516";
+
+	proc sql;
+    	select
+	 	min(VAR22) as min
+		,max(VAR22) as max
+		,mean(VAR22) as mean
+		,median(VAR22) as med
+		,nmiss(VAR22) as missing
+   	 from
+		frpm1516
+  	  	;
+	quit;
+	title;
+
+	title "Inspect Percent_Eligible_Free_K12 in frpm1617";
+	proc sql;
+    		select
+	 	min(VAR20) as min
+		,max(VAR20) as max
+		,mean(VAR20) as mean
+		,median(VAR20) as med
+		,nmiss(VAR20) as missing
+    		from
+		frpm1617
+    		;
+	quit;
+	title;
+
+	title "Inspect PctGE21, after converting to numeric values, in act17";
+	proc sql;
+    		select
+	 	min(input(PctGE21,best12.)) as min
+		,max(input(PctGE21,best12.)) as max
+		,mean(input(PctGE21,best12.)) as mean
+		,median(input(PctGE21,best12.)) as med
+		,nmiss(input(PctGE21,best12.)) as missing
+    		from
+		act17
+    		;
+		quit;
+		title;
+
+	title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
+	proc sql;
+    		select
+	 	input(NumTstTakr,best12.) as Number_of_testers
+		,count(*)
+    		from
+		act17
+    		group by
+		calculated Number_of_testers
+    		;	
+	quit;
+	title;
+
+	
+	title "Inspect TOTAL, after converting to numeric values, in dropouts17";
+	proc sql;
+		select
+		min(DTOT) as min
+		,max(DTOT) as max
+		,mean(DTOT) as mean
+		,median(DTOT) as med
+		,nmiss(DTOT) as missing
+    		from
+		dropouts17
+    		;
+	quit;
+	title;
+	*/
+*combine frpm1516 and frpm1617 horizontally using a data-step match-merge;
+
+data twoyears;
+    retain
+	    School_Code
+		Academic_Year
+		District_Code
+		School_Code
+		School_Type
+        VAR22
+		VAR23
+		VAR24
+	;
+	keep
+	    School_Code
+		Academic_Year
+		District_Code
+		School_Code
+		School_Type
+        VAR22
+		VAR23
+		VAR24
+    ;
+   merge
+        frpm1516(
+            rename=(
+			VAR22 = Percent_Elgible
+			VAR23 = Enrollment
+			VAR24 = Meal_Count
+                    )
+              ) 
+
+        frpm1617(
+            rename=(
+			VAR22 = Percent_Elgible
+			VAR23 = Enrollment
+			VAR24 = Meal_Count
+		
+                    )
+             )
+;
+    by  School_Code;
+run; 
+
+proc sort data = twoyears;
+    by School_Code;
+run;
+
+* combine frpm1617 and frpm1516 horizontally using proc sql;
+
+proc sql;
+    create table sqltwoyears as
+        select
+             coalesce(A.School_Code,B.School_Code) as School_Code
+            ,coalesce(A.var22) as Percent_elgible
+            ,coalesce(A.var23) as Enrollment
+			,coalesce(A.var24) as Meal_Count
+        from
+            frpm1516 as A
+            full join
+            frpm1617 as B
+            on A.School_Code=B.School_Code
+        order by
+            School_Code
+
     /*  
 
     title "Inspect Percent_Eligible_Free_K12 in frpm1516";
@@ -518,9 +656,19 @@ proc sql;
             on A.CDS=B.CDS_Code
         order by
             CDS_Code
+
     ;
 quit;
 
+
+
+* verify that twoyears and sqltwoyears are identical;
+proc compare
+        base=twoyears
+        compare=sqltwoyears
+        novalues
+    ;
+run;
 
 * verify that act_and_drop17_v1 and act_and_drop17_v2 are identical;
 proc compare
@@ -529,8 +677,3 @@ proc compare
         novalues
     ;
 run;
-
-
-
-
-
