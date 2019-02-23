@@ -539,31 +539,36 @@ proc sql;
         select
              coalesce(A.CDS_Code,B.CDS_Code,C.CDS_Code,D.CDS_Code)
              AS CDS_Code
-            ,coalesce(A.School,B.School,C.School,D.School)
+            ,coalesce(A.School,B.School,D.School)
              AS School
-            ,coalesce(A.District,B.District,C.District,D.District)
+            ,coalesce(A.District,B.District,D.District)
              AS District
-            ,A.Percent_Eligible_FRPM_K12_1415 format percent12.2
-             label "FRPM Eligibility Rate in AY2014-15"
-            ,B.Percent_Eligible_FRPM_K12_1516 format percent12.2
+            ,A.Percent_Eligible_FRPM_K12_1516 format percent12.2
              label "FRPM Eligibility Rate in AY2015-16"
-            ,B.Percent_Eligible_FRPM_K12_1516
-             - A.Percent_Eligible_FRPM_K12_1415
+            ,B.Percent_Eligible_FRPM_K12_1617 format percent12.2
+             label "FRPM Eligibility Rate in AY2016-17"
+            ,B.Percent_Eligible_FRPM_K12_1617
+             - A.Percent_Eligible_FRPM_K12_1516
              AS FRPM_Percentage_Point_Increase format percent12.2
              label "FRPM Eligibility Rate Percentage Point Increase"
-            ,C.Number_of_Course_Completers format comma12.
-             label "Number of 'a-g' Course Completers in AY2014-15"
-            ,D.Number_of_SAT_Takers format comma12.
-             label "Number of SAT Takers in AY2014-15"
-            ,D.Number_of_SAT_Takers - C.Number_of_Course_Completers
-             AS Course_Completers_Gap_Count format comma12.
-             label "Gap Count between SAT Takers and 'a-g' Completers"
-            ,calculated Course_Completers_Gap_Count
-             / C.Number_of_Course_Completers format percent12.2
-             label "Gap Percent between SAT Takers and 'a-g' Completers"
-             AS Course_Completers_Gap_Percent
-            ,D.Percent_with_SAT_above_1500 format percent12.2
-             label "Percentage of SAT Takers Scoring 1500+ in AY2014-15"
+            ,C.Number_of_Total_Enrollment format comma12.
+             label "Number_of_Total_Enrollment in AY2016-17"
+			,C.Number_of_Total_Dropout format comma12.
+             label "Number_of_Total_Dropout in AY2016-17"
+			,C.Number_of_Total_Enrollment - C.Number_of_Total_Dropout
+             AS Number_of_Total_Remain format comma12.
+             label "Number_of_Total_Remain from grade seven to grade twelve"
+			,C.Number_of_Total_Dropout / C.Number_of_Total_Enrollment
+             AS Rate_of_Dropout format percent12.2
+             label "Rate_of_Dropout from grade seven to grade twelve"
+            ,calculated Number_of_Total_Remain
+             / C.Number_of_Total_Enrollment format percent12.2
+             AS Rate_of_Remain 
+             label "Rate_of_Remain from grade seven to grade twelve"
+            ,D.Number_of_ACT_Takers format comma12.
+             label "Number of ACT Takers in AY2016-17"
+            ,D.Percent_with_ACT_above_21 format comma12.2
+             label "Percentage of ACT Takers Scoring 21+ in AY2016-17"      
         from
             (
                 select
@@ -576,7 +581,7 @@ proc sql;
                     ,District_Name
                      AS
                      District
-                    ,Percent_Eligible_FRPM_K12
+                    ,VAR20
                      AS Percent_Eligible_FRPM_K12_1516
                 from
                     frpm1516
@@ -593,10 +598,10 @@ proc sql;
                     ,District_Name
                      AS
                      District
-                    ,Percent_Eligible_FRPM_K12
+                    ,VAR20
                      AS Percent_Eligible_FRPM_K12_1617
                 from
-                    frpm11617
+                    frpm1617
             ) as B
             on A.CDS_Code = B.CDS_Code
             full join
@@ -605,7 +610,7 @@ proc sql;
                      CDS_CODE
                      AS CDS_Code
                     ,TTE
-                     AS Number_of_Total_Enrollment
+                     AS Number_of_Total_Enrollment /* from grade seven to grade twelve*/
                     ,TTD
                      AS Number_of_Total_Dropout
                 from
@@ -622,9 +627,9 @@ proc sql;
                     ,dname
                      AS
                      District
-                    ,NumTstTakr
-                     AS Number_of_SAT_Takers
-                    ,PctGE21
+                    ,input(NumTstTakr, best12.)
+                     AS Number_of_ACT_Takers
+                    ,input(PctGE21,best12.)
                      AS Percent_with_ACT_above_21
                 from
                     act17
@@ -635,34 +640,16 @@ proc sql;
     ;
 quit;
 
+
+
+
 * check cde_analytic_file_raw for rows whose unique id values are repeated,
 missing, or correspond to non-schools, where the column CDS_Code is intended
 to be a primary key;
 * after executing this data step, we see that the full joins used above
 introduced duplicates in cde_analytic_file_raw, which need to be mitigated
 before proceeding;
-/* notes to learners:
-    (1) even though the data-integrity check and mitigation steps below could
-        be performed with SQL queries, as was used earlier in this file, it's
-        often faster and less code to use data steps and proc sort steps to
-        check for and remove duplicates; in particular, by-group processing
-        is much more convenient when checking for duplicates than the SQL row
-        aggregation and in-line view tricks used above; in practice, though,
-        you should use whatever methodology you're most comfortable with
-    (2) when determining what type of join to use to combine tables, it's
-        common to designate one of the table as the "master" table, and to use
-        left (outer) joins to add columns from the other "auxiliary" tables
-    (3) however, if this isn't the case, an inner joins typically makes sense
-        whenever we're only interested in rows whose unique id values match up
-        in the tables to be joined
-    (4) similarly, full (outer) joins tend to make sense whenever we want all
-        possible combinations of all rows with respect to unique id values to
-        be included in the output dataset, such as in this example, where not
-        every dataset will necessarily have every possible of CDS_Code in it
-    (5) unfortunately, though, full joins of more than two tables can also
-        introduce duplicates with respect to unique id values, even if unique
-        id values are not duplicated in the original input datasets 
-*/
+
 data cde_analytic_file_raw_bad_ids;
     set cde_analytic_file_raw;
     by CDS_Code;
