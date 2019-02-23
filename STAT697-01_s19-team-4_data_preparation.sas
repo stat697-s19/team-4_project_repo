@@ -647,3 +647,78 @@ quit;
 	    ;
 	run;
 	*/
+
+*creating analytical dataset named "analytical_merged";
+proc sql;
+    create table analytical_merged as
+        select
+             coalesce(A.CDS_Code,B.CDS_Code,C.CDS_Code,D.CDS_Code)
+             AS CDS_Code
+            ,coalesce(A.District,B.District,D.District)
+             AS District
+            ,A.VAR20 format percent12.2
+             label "FRPM Percent Eligible 15-16"
+            ,B.VAR20 format percent12.2
+             label "FRPM Percent Eligible 16-17"
+            ,D.Number_took_ACT
+             label "Number of ACT Takers in 2017"
+            ,D.Percent_with_ACT_above_21 format best12.
+             label "Percentage of ACT takers scoring 21+ 2017"
+			,C.ETHNIC, C.GENDER, C.E7, C.E8, C.E9, C.E10, C.E11, C.E12, 
+			C.ETOT, C.D7, C.D8, C.D9, C.D10, C.D11, C.D12, C.DTOT
+			
+        from
+            (
+                select
+                     cats(County_Code,District_Code,School_Code)
+                     AS CDS_Code
+                     length 14
+                    ,District_Name
+                     AS
+                     District
+                    ,VAR20
+                from
+                    Frpm1516
+            ) as A
+            full join
+            (
+                select
+                     cats(County_Code,District_Code,School_Code)
+                     AS CDS_Code
+                     length 14
+                    ,District_Name
+                     AS District
+                    ,VAR20
+                from
+                    Frpm1617
+            ) as B
+            on A.CDS_Code = B.CDS_Code
+            full join
+            (
+                select
+                    CDS_CODE, ETHNIC, GENDER, E7, E8, E9, E10,
+					E11, E12, ETOT, D7, D8, D9, D10, D11, D12, DTOT
+                from
+                    Dropouts17
+            ) as C
+            on A.CDS_Code = C.CDS_Code
+            full join
+            (
+                select
+                     cds
+                     AS CDS_Code
+                    ,dname
+                     AS
+                     District
+                    ,NumTstTakr
+                     AS Number_took_ACT
+                    ,PctGE
+                     AS Percent_with_ACT_above_21
+                from
+                    act17
+            ) as D
+            on A.CDS_Code = D.CDS_Code
+    order by
+        CDS_Code
+    ;
+quit;
