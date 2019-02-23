@@ -4,9 +4,11 @@
 *******************************************************************************;
 
 * set relative file import path to current directory (using standard SAS trick);
-X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
+X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget
+(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
 
-* load external file that will generate final analytic file;
+* load external file that will generate "analytic file"dataset code_anlytic_file,
+from which all data analyses below begin;
 %include '.\STAT697-01_s19-team-4_data_preparation.sas';
 
 
