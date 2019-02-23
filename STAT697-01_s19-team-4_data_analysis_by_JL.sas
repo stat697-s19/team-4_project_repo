@@ -15,6 +15,27 @@ from which all data analyses below begin;
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
+proc sql outobs=10;
+	select 
+		 School
+		,District
+		,Percent_Eligible_FRPM_K12_1516
+		,Percent_Eligible_FRPM_K12_1617
+		,FRPM_Percentage_Point_Increase
+	from
+		cde_analytic_file
+	where 
+	    Percent_Eligible_FRPM_K12_1516 >0
+		and
+		Percent_Eligible_FRPM_K12_1617 >0
+	order by
+		FRPM_Percentage_Point_Increase desc
+	;
+       
+
+quit;
+
+
 *
 Question: What are the top ten districts that experienced the biggest increase 
 and decrease in "Percent (%) Eligible Free (K-12)" between AY2015-16 and AY2016-17? 
@@ -33,6 +54,42 @@ be excluded from this analysis, since they are potentially missing data values
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
+* Add the Percent_Eligible_FRPM_K12_rank group;
+proc rank
+		groups=10
+		data = cde_analytic_file
+		out =cde_analytic_file_ranked
+		;
+	var Percent_Eligible_FRPM_K12_1617;
+	ranks Percent_Eligible_FRPM_K12_rank;
+run;
+* Percent_with_ACT_above_21_rank group;
+proc rank
+		groups=10
+		data = cde_analytic_file_ranked
+		out =cde_analytic_file_ranked
+		;
+	var Percent_with_ACT_above_21;
+	ranks Percent_with_ACT_above_21_rank;
+run;
+
+proc freq data = cde_analytic_file_ranked;
+	table
+		Percent_Eligible_FRPM_K12_rank
+	;
+	label
+		Percent_Eligible_FRPM_K12_rank=""
+        Percent_with_ACT_above_21_rank =""
+	;
+	where
+	    not(missing(Percent_Eligible_FRPM_K12_1617))
+		and
+		not(missing(Percent_with_ACT_above_21))
+	;
+run;
+
+
+
 *
 Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the proportion 
 of high school graduates earning a combined score of at least 1500 on the ACT? 
@@ -69,48 +126,30 @@ from this analysis, since they are potentially missing data values.
 ;
 
 * calculate the first 10 school that the drop rate is lowest;
-proc sql outobs=10;
-    select
-         School
-        ,District
-        ,Number_of_ACT_Takers /* NumTstTakr from act17 */
-        ,Number_Dropout /* TTD from drop17 */
-		,Number_Erollment/* TTE from drop17*/
-        ,Number_Erollment - Number_Dropout
-         AS Difference
-        ,(calculated Difference)/Number_Erollment
-         AS Percent_Difference format percent12.1
-    from
-        act_and_drop17_v2
-    where
-        Number_Erollment > 0
-        and
-        Number_Dropout > 0
-    order by
-        Difference desc
-    ;
-quit;
-* calculate the first 10 school that the taking ACT rate is hight;
-proc sql outobs=10;
-    select
-         School
-        ,District
-        ,Number_of_ACT_Takers /* NumTstTakr from act17 */
-        ,Number_Dropout /* TTD from drop17 */
-		,Number_Erollment/* TTE from drop17*/
-        ,Number_Erollment - Number_of_ACT_Takers
-         AS Difference
-        ,(calculated Difference)/Number_Erollment
-         AS Percent_Difference format percent12.1
-    from
-        act_and_drop17_v2
-    where
-        Number_Erollment > 0
-        and
-        Number_Dropout > 0
-		and
-        Number_of_ACT_Takers >0
-    order by
-        Difference desc
-    ;
-quit;
+   
+	proc sql outobs=10;
+	    select
+	         School
+	        ,District
+	        ,Number_of_ACT_Takers /* NumTstTakr from act17 */
+	        ,Number_of_Total_Dropout /* TTD from drop17 */
+			,Number_of_Total_Enrollment/* TTE from drop17*/
+	        ,Number_of_Total_Remain
+	        ,Rate_of_Remain
+			,Rate_of_Dropout
+	    from
+	        cde_analytic_file
+	    where
+	        Number_of_Total_Enrollment > 0
+	        and
+	        Number_of_Total_Dropout > 0
+			and
+			Number_of_Total_Remain >0
+	    order by
+		    Rate_of_Dropout 
+               
+	    ;
+	quit;
+	
+	
+
