@@ -1,3 +1,4 @@
+
 *******************************************************************************;
 **************** 80-character banner for column width reference ***************;
 * (set window width to banner width to calibrate line length to 80 characters *;
@@ -67,6 +68,8 @@ race/ethnic designation and gender by school, AY2016-17
 http://dq.cde.ca.gov/dataquest/dlfile/dlfile.aspx?cLevel=School&cYear=2016-17&cCat
 =Dropouts&cPage=filesdropouts was downloaded and edited to produce file gradaf15.xls
 by importing into Excel and setting all cell values to "Text" format
+
+
 [Data Dictionary] https://www.cde.ca.gov/ds/sd/sd/fsdropouts.asp
 [Unique ID Schema] The column CDS_CODE is a unique id.
 ;
@@ -343,6 +346,7 @@ quit;
 	quit;
 	*/
 
+
 * inspect columns of interest in cleaned versions of datasets;
 
 	/*
@@ -462,7 +466,7 @@ quit;
 	run;
 
 	* combine frpm1617 and frpm1516 horizontally using proc sql;
-
+ 
 	proc sql;
 	    create table sqltwoyears as
 	        select
