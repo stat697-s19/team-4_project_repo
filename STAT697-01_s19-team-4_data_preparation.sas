@@ -443,92 +443,93 @@ quit;
     quit;
     title;
     */
+	/*
+	* combine act17 and drop17 horizontally using a data-step match-merge;
+	* note: After running the data step and proc sort step below several times
+	  and averaging the fullstimer output in the system log, they tend to take
+	  about 0.06 seconds of combined "real time" to execute and a maximum of
+	  about 1.2 MB of memory (990 KB for the data step vs. 2895 KB for the
+	  proc sort step) on the computer they were tested on;
 
+	data act_and_drop17_v1;
+	    retain
+		    CDS_code
+			School
+			District
+			Number_of_ACT_Takers
+			Number_Dropout
+	        Number_Erollment
+		;
+		keep
+		    CDS_code
+			School
+			District
+			Number_of_ACT_Takers
+			Number_Dropout
+	        Number_Erollment
+	    ;
+	   merge
+	        drop17(
+	            rename=(
+				TTD = Number_Dropout
+				TTE = Number_Erollment
+	                    )
+	              ) 
 
-* combine act17 and drop17 horizontally using a data-step match-merge;
-* note: After running the data step and proc sort step below several times
-  and averaging the fullstimer output in the system log, they tend to take
-  about 0.06 seconds of combined "real time" to execute and a maximum of
-  about 1.2 MB of memory (990 KB for the data step vs. 2895 KB for the
-  proc sort step) on the computer they were tested on;
-
-data act_and_drop17_v1;
-    retain
-	    CDS_code
-		School
-		District
-		Number_of_ACT_Takers
-		Number_Dropout
-        Number_Erollment
+	        act17(
+	            rename=(
+				cds = CDS_code
+				sname = School
+				dname= District
+			
+	                    )
+	             )
 	;
-	keep
-	    CDS_code
-		School
-		District
-		Number_of_ACT_Takers
-		Number_Dropout
-        Number_Erollment
-    ;
-   merge
-        drop17(
-            rename=(
-			TTD = Number_Dropout
-			TTE = Number_Erollment
-                    )
-              ) 
+	    by  CDS_code;
+	    Number_of_ACT_Takers=input(NumTstTakr, best12.);
+	run; 
 
-        act17(
-            rename=(
-			cds = CDS_code
-			sname = School
-			dname= District
-		
-                    )
-             )
-;
-    by  CDS_code;
-    Number_of_ACT_Takers=input(NumTstTakr, best12.);
-run; 
+	proc sort data=act_and_drop17_v1;
+	    by CDS_code;
+	run;
 
-proc sort data=act_and_drop17_v1;
-    by CDS_code;
-run;
+	* combine act17 and drop17 horizontally using proc sql;
+	* note: After running the proc sql step below several times and averaging
+	  the fullstimer output in the system log, they tend to take about 0.04
+	  seconds of "real time" to execute and about 6760k of memory on the computer
+	  they were tested on. Consequently, the proc sql step appears to take roughly
+	  the same amount of time to execute as the combined data step and proc sort
+	  steps above, but to use roughly twice times as much memory;
 
-* combine act17 and drop17 horizontally using proc sql;
-* note: After running the proc sql step below several times and averaging
-  the fullstimer output in the system log, they tend to take about 0.04
-  seconds of "real time" to execute and about 6760k of memory on the computer
-  they were tested on. Consequently, the proc sql step appears to take roughly
-  the same amount of time to execute as the combined data step and proc sort
-  steps above, but to use roughly twice times as much memory;
-
-proc sql;
-    create table act_and_drop17_v2 as
-        select
-             coalesce(A.CDS,B.CDS_Code) as CDS_Code
-            ,coalesce(A.sname) as School
-            ,coalesce(A.dname) as District
-            ,input(A.NumTstTakr,best12.) as Number_of_ACT_Takers
-            ,coalesce(B.TTD) as Number_Dropout
-			,coalesce(B.TTE) as Number_Erollment
-        from
-            act17 as A
-            full join
-            drop17 as B
-            on A.CDS=B.CDS_Code
-        order by
-            CDS_Code
-    ;
-quit;
+	proc sql;
+	    create table act_and_drop17_v2 as
+	        select
+	             coalesce(A.CDS,B.CDS_Code) as CDS_Code
+	            ,coalesce(A.sname) as School
+	            ,coalesce(A.dname) as District
+	            ,input(A.NumTstTakr,best12.) as Number_of_ACT_Takers
+	            ,coalesce(B.TTD) as Number_Dropout
+				,coalesce(B.TTE) as Number_Erollment
+	        from
+	            act17 as A
+	            full join
+	            drop17 as B
+	            on A.CDS=B.CDS_Code
+	        order by
+	            CDS_Code
+	    ;
+	quit;
 
 
-* verify that act_and_drop17_v1 and act_and_drop17_v2 are identical;
-proc compare
-        base=act_and_drop17_v1
-        compare=act_and_drop17_v2
-        novalues
-    ;
-run;
+	* verify that act_and_drop17_v1 and act_and_drop17_v2 are identical;
+	proc compare
+	        base=act_and_drop17_v1
+	        compare=act_and_drop17_v2
+	        novalues
+	    ;
+	run;
+	*/
+
 
 
 
