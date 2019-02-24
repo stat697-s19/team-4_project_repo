@@ -338,13 +338,13 @@ quit;
 	    from dropouts17;
 
 	proc sql;
-    	create table drop17 as
+    	create table drop17_ as
     	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
 	    	from drop17_
 			group by CDS_CODE;
  
 	quit;
-	
+
 
 
 * inspect columns of interest in cleaned versions of datasets;
@@ -922,7 +922,7 @@ proc sql;
                     ,TTD
                      AS Number_of_Total_Dropout
                 from
-                    drop17
+                    drop17_
             ) as C
             on A.CDS_Code = C.CDS_Code
             full join
