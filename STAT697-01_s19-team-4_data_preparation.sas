@@ -338,13 +338,13 @@ quit;
 	    from dropouts17;
 
 	proc sql;
-    	create table drop17 as
+    	create table drop17__ as
     	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
 	    	from drop17_
 			group by CDS_CODE;
  
 	quit;
-	
+
 
 
 * inspect columns of interest in cleaned versions of datasets;
@@ -648,7 +648,7 @@ quit;
 	run;
 	*/
 
-*creating analytical dataset named "analytical_merged";
+* created by MS creating analytical dataset named "analytical_merged ";
 proc sql;
     create table analytical_merged as
         select
@@ -673,14 +673,16 @@ proc sql;
         ;
     quit;
     title;
-    */
-	/*
+   
+
+	
 	* combine act17 and drop17 horizontally using a data-step match-merge;
 	* note: After running the data step and proc sort step below several times
 	  and averaging the fullstimer output in the system log, they tend to take
 	  about 0.06 seconds of combined "real time" to execute and a maximum of
 	  about 1.2 MB of memory (990 KB for the data step vs. 2895 KB for the
 	  proc sort step) on the computer they were tested on;
+	/*
 
 	data act_and_drop17_v1;
 	    retain
@@ -761,7 +763,7 @@ proc sql;
 	run;
 	*/
 
-*creating analytical dataset named "analytical_merged";
+* created by MS creating analytical dataset named "analytical_merged";
 proc sql;
     create table analytical_merged as
         select
@@ -837,7 +839,7 @@ proc sql;
     ;
 quit;
 
-* build analytic dataset from raw datasets imported above, including only the
+* created by JL, build analytic dataset from raw datasets imported above,including only the
 columns and minimal data-cleaning/transformation needed to address each
 research questions/objectives in data-analysis files;
 proc sql;
@@ -922,7 +924,7 @@ proc sql;
                     ,TTD
                      AS Number_of_Total_Dropout
                 from
-                    drop17
+                    drop17__
             ) as C
             on A.CDS_Code = C.CDS_Code
             full join
@@ -949,10 +951,6 @@ proc sql;
     ;
 quit;
 
-
-
-
-
 * check cde_analytic_file_raw for rows whose unique id values are repeated,
 missing, or correspond to non-schools, where the column CDS_Code is intended
 to be a primary key;
@@ -975,8 +973,6 @@ data cde_analytic_file_raw_bad_ids;
             output;
         end;
 run;
-
-
 * remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
 * after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
   either of the rows in duplicate-row pairs can be removed without losing
@@ -991,44 +987,4 @@ proc sort
         CDS_Code
     ;
 run;
-
-* check cde_analytic_file_raw for rows whose unique id values are repeated,
-missing, or correspond to non-schools, where the column CDS_Code is intended
-to be a primary key;
-* after executing this data step, we see that the full joins used above
-introduced duplicates in cde_analytic_file_raw, which need to be mitigated
-before proceeding;
-
-data cde_analytic_file_raw_bad_ids;
-    set cde_analytic_file_raw;
-    by CDS_Code;
-
-    if
-        first.CDS_Code*last.CDS_Code = 0
-        or
-        missing(CDS_Code)
-        or
-        substr(CDS_Code,8,7) in ("0000000","0000001")
-    then
-        do;
-            output;
-        end;
-run;
-
-* remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
-* after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
-  either of the rows in duplicate-row pairs can be removed without losing
-  values for analysis, so we use proc sort to indiscriminately remove
-  duplicates, after which column CDS_Code is guaranteed to form a primary key;
-proc sort
-        nodupkey
-        data=cde_analytic_file_raw
-        out=cde_analytic_file
-    ;
-    by
-        CDS_Code
-    ;
-run;
-
-
 
