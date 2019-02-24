@@ -329,7 +329,7 @@ quit;
   eight into the total enrollment and total drop number individually, then 
   name the new work drop17;
 
-/*
+
 	proc sql;
     	create table drop17_ as
     	select CDS_CODE, 
@@ -344,7 +344,7 @@ quit;
 			group by CDS_CODE;
  
 	quit;
-	*/
+	
 
 
 * inspect columns of interest in cleaned versions of datasets;
@@ -648,7 +648,7 @@ quit;
 	run;
 	*/
 
-*creating analytical dataset named "analytical_merged";
+*creating analytical dataset named "analytical_merged" created by MS;
 proc sql;
     create table analytical_merged as
         select
@@ -722,3 +722,157 @@ proc sql;
         CDS_Code
     ;
 quit;
+
+* build analytic dataset from raw datasets imported above, including only the
+columns and minimal data-cleaning/transformation needed to address each
+research questions/objectives in data-analysis files created by JL;
+proc sql;
+    create table cde_analytic_file_raw as
+        select
+             coalesce(A.CDS_Code,B.CDS_Code,C.CDS_Code,D.CDS_Code)
+             AS CDS_Code
+            ,coalesce(A.School,B.School,D.School)
+             AS School
+            ,coalesce(A.District,B.District,D.District)
+             AS District
+            ,A.Percent_Eligible_FRPM_K12_1516 format percent12.2
+             label "FRPM Eligibility Rate in AY2015-16"
+            ,B.Percent_Eligible_FRPM_K12_1617 format percent12.2
+             label "FRPM Eligibility Rate in AY2016-17"
+            ,B.Percent_Eligible_FRPM_K12_1617
+             - A.Percent_Eligible_FRPM_K12_1516
+             AS FRPM_Percentage_Point_Increase format percent12.2
+             label "FRPM Eligibility Rate Percentage Point Increase"
+            ,C.Number_of_Total_Enrollment format comma12.
+             label "Number_of_Total_Enrollment in AY2016-17"
+			,C.Number_of_Total_Dropout format comma12.
+             label "Number_of_Total_Dropout in AY2016-17"
+			,C.Number_of_Total_Enrollment - C.Number_of_Total_Dropout
+             AS Number_of_Total_Remain format comma12.
+             label "Number_of_Total_Remain from grade seven to grade twelve"
+			,C.Number_of_Total_Dropout / C.Number_of_Total_Enrollment
+             AS Rate_of_Dropout format percent12.2
+             label "Rate_of_Dropout from grade seven to grade twelve"
+            ,calculated Number_of_Total_Remain
+             / C.Number_of_Total_Enrollment format percent12.2
+             AS Rate_of_Remain 
+             label "Rate_of_Remain from grade seven to grade twelve"
+            ,D.Number_of_ACT_Takers format comma12.
+             label "Number of ACT Takers in AY2016-17"
+            ,D.Percent_with_ACT_above_21 format comma12.2
+             label "Percentage of ACT Takers Scoring 21+ in AY2016-17"      
+        from
+            (
+                select
+                     cats(County_Code,District_Code,School_Code)
+                     AS CDS_Code
+                     length 14
+                    ,School_Name
+                     AS
+                     School
+                    ,District_Name
+                     AS
+                     District
+                    ,VAR20
+                     AS Percent_Eligible_FRPM_K12_1516
+                from
+                    frpm1516
+            ) as A
+            full join
+            (
+                select
+                     cats(County_Code,District_Code,School_Code)
+                     AS CDS_Code
+                     length 14
+                    ,School_Name
+                     AS
+                     School
+                    ,District_Name
+                     AS
+                     District
+                    ,VAR20
+                     AS Percent_Eligible_FRPM_K12_1617
+                from
+                    frpm1617
+            ) as B
+            on A.CDS_Code = B.CDS_Code
+            full join
+            (
+                select
+                     CDS_CODE
+                     AS CDS_Code
+                    ,TTE
+                     AS Number_of_Total_Enrollment /* from grade seven to grade twelve*/
+                    ,TTD
+                     AS Number_of_Total_Dropout
+                from
+                    drop17
+            ) as C
+            on A.CDS_Code = C.CDS_Code
+            full join
+            (
+                select
+                     cds
+                     AS CDS_Code
+                    ,sname
+                     AS School
+                    ,dname
+                     AS
+                     District
+                    ,input(NumTstTakr, best12.)
+                     AS Number_of_ACT_Takers
+                    ,input(PctGE21,best12.)
+                     AS Percent_with_ACT_above_21
+                from
+                    act17
+            ) as D
+            on A.CDS_Code = D.CDS_Code
+    order by
+        CDS_Code
+    ;
+quit;
+
+
+
+
+* check cde_analytic_file_raw for rows whose unique id values are repeated,
+missing, or correspond to non-schools, where the column CDS_Code is intended
+to be a primary key;
+* after executing this data step, we see that the full joins used above
+introduced duplicates in cde_analytic_file_raw, which need to be mitigated
+before proceeding;
+
+data cde_analytic_file_raw_bad_ids;
+    set cde_analytic_file_raw;
+    by CDS_Code;
+
+    if
+        first.CDS_Code*last.CDS_Code = 0
+        or
+        missing(CDS_Code)
+        or
+        substr(CDS_Code,8,7) in ("0000000","0000001")
+    then
+        do;
+            output;
+        end;
+run;
+
+* remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
+* after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
+  either of the rows in duplicate-row pairs can be removed without losing
+  values for analysis, so we use proc sort to indiscriminately remove
+  duplicates, after which column CDS_Code is guaranteed to form a primary key;
+proc sort
+        nodupkey
+        data=cde_analytic_file_raw
+        out=cde_analytic_file
+    ;
+    by
+        CDS_Code
+    ;
+run;
+
+
+
+
