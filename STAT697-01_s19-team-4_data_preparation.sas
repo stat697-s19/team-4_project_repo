@@ -648,7 +648,7 @@ quit;
 	run;
 	*/
 
-*creating analytical dataset named "analytical_merged by MS";
+* created by MS creating analytical dataset named "analytical_merged ";
 proc sql;
     create table analytical_merged as
         select
@@ -674,13 +674,15 @@ proc sql;
     quit;
     title;
     */
-	/*
+
+	
 	* combine act17 and drop17 horizontally using a data-step match-merge;
 	* note: After running the data step and proc sort step below several times
 	  and averaging the fullstimer output in the system log, they tend to take
 	  about 0.06 seconds of combined "real time" to execute and a maximum of
 	  about 1.2 MB of memory (990 KB for the data step vs. 2895 KB for the
 	  proc sort step) on the computer they were tested on;
+	/*
 
 	data act_and_drop17_v1;
 	    retain
@@ -761,7 +763,7 @@ proc sql;
 	run;
 	*/
 
-*creating analytical dataset named "analytical_merged";
+* created by MS creating analytical dataset named "analytical_merged";
 proc sql;
     create table analytical_merged as
         select
