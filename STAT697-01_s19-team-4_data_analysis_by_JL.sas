@@ -164,7 +164,7 @@ and missing values of PctGE21 should also be excluded.
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 title1 justify= left
-'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What’s the top ten schools were the number of high dropout?'
+'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout?'
 ;
 title2 justify= left
 'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools most in need of more help with the FRPM.'
@@ -210,13 +210,29 @@ proc corr
 ;
 run;
 
+*******************************************************************************;
+* Research Question Analysis Starting Point;
+*******************************************************************************;
+title1 justify= left
+'Question: What’s the top ten schools were the number of high dropout? and the corresponding number of ACT takers'
+;
+title2 justify= left
+'Rationale: This would help identify whether ACT are associated with the number of high dropout students, if so, providing a strong conformation for the negative relationship between the number of ACT taker and dropput students.'
+;
+footnote1 justify= left
+'From the table, we can find that there is no students taking ACT for the top 10 schools which were high dropout rate'
+;
+footnote2 justify= left
+'This information strongly proof that the more students dropout from school the less number of students taking ACT test, the result is the same with our common sense.'
+;
+
 * calculate the first 10 school that the drop rate is lowest;
    
 	proc sql outobs=10;
 	    select
 	         School
 	        ,District
-	        ,Number_of_ACT_Takers /* NumTstTakr from act17 */
+	        ,Number_of_ACT_Takers/* NumTstTakr from act17 */
 	        ,Number_of_Total_Dropout /* TTD from drop17 */
 			,Number_of_Total_Enrollment/* TTE from drop17*/
 	        ,Number_of_Total_Remain
@@ -231,7 +247,7 @@ run;
 			and
 			Number_of_Total_Remain >0
 	    order by
-		    Rate_of_Dropout 
+		    Rate_of_Dropout desc
                
 	    ;
 	quit;
