@@ -32,7 +32,7 @@ footnote3 justify= left
 'We discover that the 6th school even has 68.89% increase Rate, while the factor is that the FRPM Eligibility of Rate of both AY2015 and AY 2016 are lower than other school.'
 ;
 footnote4 justify= left
-'Based on above analysis, we had better to consider if we should include the Camp Glenwood school and Rising Sun school or consider them as outliersin our further study.'
+'Based on above analysis, we had better to consider if we should include the Camp Glenwood school and Rising Sun school or consider them as outliers in our further study.'
 ;
 
 proc sql outobs=10;
