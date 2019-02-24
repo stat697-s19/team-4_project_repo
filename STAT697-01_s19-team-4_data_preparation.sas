@@ -338,7 +338,7 @@ quit;
 	    from dropouts17;
 
 	proc sql;
-    	create table drop17_ as
+    	create table drop17__ as
     	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
 	    	from drop17_
 			group by CDS_CODE;
@@ -673,7 +673,7 @@ proc sql;
         ;
     quit;
     title;
-    */
+   
 
 	
 	* combine act17 and drop17 horizontally using a data-step match-merge;
@@ -924,7 +924,7 @@ proc sql;
                     ,TTD
                      AS Number_of_Total_Dropout
                 from
-                    drop17_
+                    drop17__
             ) as C
             on A.CDS_Code = C.CDS_Code
             full join
@@ -951,10 +951,6 @@ proc sql;
     ;
 quit;
 
-
-
-
-
 * check cde_analytic_file_raw for rows whose unique id values are repeated,
 missing, or correspond to non-schools, where the column CDS_Code is intended
 to be a primary key;
@@ -977,8 +973,6 @@ data cde_analytic_file_raw_bad_ids;
             output;
         end;
 run;
-
-
 * remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
 * after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
   either of the rows in duplicate-row pairs can be removed without losing
@@ -993,44 +987,4 @@ proc sort
         CDS_Code
     ;
 run;
-
-* check cde_analytic_file_raw for rows whose unique id values are repeated,
-missing, or correspond to non-schools, where the column CDS_Code is intended
-to be a primary key;
-* after executing this data step, we see that the full joins used above
-introduced duplicates in cde_analytic_file_raw, which need to be mitigated
-before proceeding;
-
-data cde_analytic_file_raw_bad_ids;
-    set cde_analytic_file_raw;
-    by CDS_Code;
-
-    if
-        first.CDS_Code*last.CDS_Code = 0
-        or
-        missing(CDS_Code)
-        or
-        substr(CDS_Code,8,7) in ("0000000","0000001")
-    then
-        do;
-            output;
-        end;
-run;
-
-* remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
-* after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
-  either of the rows in duplicate-row pairs can be removed without losing
-  values for analysis, so we use proc sort to indiscriminately remove
-  duplicates, after which column CDS_Code is guaranteed to form a primary key;
-proc sort
-        nodupkey
-        data=cde_analytic_file_raw
-        out=cde_analytic_file
-    ;
-    by
-        CDS_Code
-    ;
-run;
-
-
 
