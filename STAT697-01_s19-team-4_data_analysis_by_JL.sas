@@ -15,6 +15,26 @@ from which all data analyses below begin;
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
+
+title1 justify= left
+'Question: What are the top ten school that experienced the biggest increase in "Percent (%) Eligible Free (K-12)" between AY2015-16 and AY2016-17?'
+;
+title2 justify= left
+'Rationale: This should help identify school districts to consider for new outreach based upon increasing and decreasing child-poverty levels.'
+;
+footnote1 justify= left
+'From the table, we can find that the range of the FRPM Eligibility Rate Percentage Point increase is 91.67%-62.5%.'
+;
+footnote2 justify= left
+'We could easily find that the first one Camp Glenwood school had a very lower FRPM Eligibility Rate in AY2015-16, which caused the fast increase of FRPM Eligibility Rate.'
+;
+footnote3 justify= left
+'We discover that the 6th school even has 68.89% increase Rate, while the factor is that the FRPM Eligibility of Rate of both AY2015 and AY 2016 are lower than other school.'
+;
+footnote4 justify= left
+'Based on above analysis, we had better to consider if we should include the Camp Glenwood school and Rising Sun school or consider them as outliersin our further study.'
+;
+
 proc sql outobs=10;
 	select 
 		 School
@@ -54,6 +74,23 @@ be excluded from this analysis, since they are potentially missing data values
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
+
+title1 justify= left
+'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What’s the top ten schools were the number of high dropout?'
+;
+title2 justify= left
+'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools most in need of more help with the FRPM.'
+;
+footnote1 justify= left
+'Actually, we can find the the p-value of the regression is <0.0001, which is significant to draw the conclusion that there is a correlation between the two vaiables, and it is negative relationship which is -0.866'
+;
+footnote2 justify= left
+'The meaning of the relationship is that the good performance of student in ACT and the good of the economy condition of the student.'
+;
+footnote3 justify= left
+'It show that the economy factor would play a crucial role in study performance of students.'
+;
+/*
 * Add the Percent_Eligible_FRPM_K12_rank group;
 proc rank
 		groups=10
@@ -87,7 +124,23 @@ proc freq data = cde_analytic_file_ranked;
 		not(missing(Percent_with_ACT_above_21))
 	;
 run;
+*/
 
+proc corr
+		data = cde_analytic_file
+		nosimple
+      ;
+	  var
+	     Percent_Eligible_FRPM_K12_1617
+		 Percent_with_ACT_above_21
+	;
+	where 
+		not(missing(Percent_Eligible_FRPM_K12_1617))
+		and 
+		not(missing(Percent_with_ACT_above_21))
+
+;
+run;
 
 
 *
@@ -110,6 +163,22 @@ and missing values of PctGE21 should also be excluded.
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
+title1 justify= left
+'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What’s the top ten schools were the number of high dropout?'
+;
+title2 justify= left
+'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools most in need of more help with the FRPM.'
+;
+footnote1 justify= left
+'Actually, we can find the the p-value of the regression is <0.0001, which is significant to draw the conclusion that there is a correlation between the two vaiables, and it is positive relationship which is 0.17033'
+;
+footnote2 justify= left
+'The meaning of the relationship is that students would have more possible to drop out school when the student is in poor economy condition .'
+;
+footnote3 justify= left
+'Above two researcher questions show that the economy factor would play a crucial role in study performance of students and even in dropout possible.'
+;
+
 *
 Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number 
 of students dropout? What’s the top ten schools were the number of high dropout?
@@ -124,6 +193,22 @@ from drop17.
 Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
 from this analysis, since they are potentially missing data values.
 ;
+
+proc corr
+		data = cde_analytic_file
+		nosimple
+      ;
+	  var
+	     Percent_Eligible_FRPM_K12_1617
+		 Rate_of_Dropout
+	;
+	where 
+		not(missing(Percent_Eligible_FRPM_K12_1617))
+		and 
+		not(missing(Rate_of_Dropout))
+
+;
+run;
 
 * calculate the first 10 school that the drop rate is lowest;
    
