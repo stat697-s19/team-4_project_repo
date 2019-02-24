@@ -329,7 +329,7 @@ quit;
   eight into the total enrollment and total drop number individually, then 
   name the new work drop17;
 
-/*
+
 	proc sql;
     	create table drop17_ as
     	select CDS_CODE, 
@@ -344,7 +344,7 @@ quit;
 			group by CDS_CODE;
  
 	quit;
-	*/
+
 
 
 * inspect columns of interest in cleaned versions of datasets;
