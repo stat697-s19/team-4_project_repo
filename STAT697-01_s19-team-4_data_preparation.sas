@@ -648,7 +648,7 @@ quit;
 	run;
 	*/
 
-*creating analytical dataset named "analytical_merged";
+*creating analytical dataset named "analytical_merged by MS";
 proc sql;
     create table analytical_merged as
         select
@@ -837,7 +837,7 @@ proc sql;
     ;
 quit;
 
-* build analytic dataset from raw datasets imported above, including only the
+* created by JL, build analytic dataset from raw datasets imported above,including only the
 columns and minimal data-cleaning/transformation needed to address each
 research questions/objectives in data-analysis files;
 proc sql;
