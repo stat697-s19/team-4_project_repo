@@ -51,8 +51,6 @@ proc sql outobs=10;
 	order by
 		FRPM_Percentage_Point_Increase desc
 	;
-       
-
 quit;
 
 
@@ -90,41 +88,7 @@ footnote2 justify= left
 footnote3 justify= left
 'It show that the economy factor would play a crucial role in study performance of students.'
 ;
-/*
-* Add the Percent_Eligible_FRPM_K12_rank group;
-proc rank
-		groups=10
-		data = cde_analytic_file
-		out =cde_analytic_file_ranked
-		;
-	var Percent_Eligible_FRPM_K12_1617;
-	ranks Percent_Eligible_FRPM_K12_rank;
-run;
-* Percent_with_ACT_above_21_rank group;
-proc rank
-		groups=10
-		data = cde_analytic_file_ranked
-		out =cde_analytic_file_ranked
-		;
-	var Percent_with_ACT_above_21;
-	ranks Percent_with_ACT_above_21_rank;
-run;
 
-proc freq data = cde_analytic_file_ranked;
-	table
-		Percent_Eligible_FRPM_K12_rank
-	;
-	label
-		Percent_Eligible_FRPM_K12_rank=""
-        Percent_with_ACT_above_21_rank =""
-	;
-	where
-	    not(missing(Percent_Eligible_FRPM_K12_1617))
-		and
-		not(missing(Percent_with_ACT_above_21))
-	;
-run;
-*/
 
 proc corr
 		data = cde_analytic_file
@@ -214,7 +178,7 @@ run;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 title1 justify= left
-'Question: What’s the top ten schools were the number of high dropout? and the corresponding number of ACT takers'
+'Question: What’s the top ten schools were the number of high dropout? and the corresponding number of ACT takers'?
 ;
 title2 justify= left
 'Rationale: This would help identify whether ACT are associated with the number of high dropout students, if so, providing a strong conformation for the negative relationship between the number of ACT taker and dropput students.'
@@ -252,5 +216,19 @@ footnote2 justify= left
 	    ;
 	quit;
 	
-	
+*
+Question: What’s the top ten schools were the number of high dropout? and 
+the corresponding number of ACT takers'?
+
+Rationale: This would help identify whether ACT are associated with the number 
+of high dropout students, if so, providing a strong conformation for the 
+negative relationship between the number of ACT taker and dropput students.
+
+Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE 
+from drop17.
+
+Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
+from this analysis, since they are potentially missing data values.
+;
+
 
