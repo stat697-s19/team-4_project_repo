@@ -276,6 +276,28 @@ proc sql;
 			
 	;
 quit;
+* because the numer of the total enrollment and dropout is not including the 
+  grade seven and grade eight, also the total number of the enrollment and 
+  dropout is saprate by ehic and gender, we should edit the dropouts17 first;
+* edit dropouts17into distinct CDS_CODE also add the grade seven and grade
+  eight into the total enrollment and total drop number individually, then 
+  name the new work drop17;
+proc sql;
+    	create table drop17_ as
+    	select CDS_CODE, 
+           	E7+E8+ ETOT as TE,
+           	D7+D8+ DTOT  as TD 
+	    from dropouts17;
+
+	proc sql;
+    	create table drop17__ as
+    	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
+	    	from drop17_
+			group by CDS_CODE;
+ 
+	quit;
+
+
 
 
 * check act17_raw for bad unique id values, where the column cds is intended to
@@ -322,333 +344,9 @@ proc sql;
 quit;
 
  
-* because the numer of the total enrollment and dropout is not including the 
-  grade seven and grade eight, also the total number of the enrollment and 
-  dropout is saprate by ehic and gender, we should edit the dropouts17 first;
-* edit dropouts17into distinct CDS_CODE also add the grade seven and grade
-  eight into the total enrollment and total drop number individually, then 
-  name the new work drop17;
 
-
-	proc sql;
-    	create table drop17_ as
-    	select CDS_CODE, 
-           	E7+E8+ ETOT as TE,
-           	D7+D8+ DTOT  as TD 
-	    from dropouts17;
-
-	proc sql;
-    	create table drop17 as
-    	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
-	    	from drop17_
-			group by CDS_CODE;
- 
-	quit;
-	
-
-
-* inspect columns of interest in cleaned versions of datasets;
-
-	/*
-	title "Inspect Percent_Eligible_Free_K12 in frpm1516";
-	proc sql;
-    	select
-	 	min(VAR22) as min
-		,max(VAR22) as max
-		,mean(VAR22) as mean
-		,median(VAR22) as med
-		,nmiss(VAR22) as missing
-   	 from
-		frpm1516
-  	  	;
-	quit;
-	title;
-	title "Inspect Percent_Eligible_Free_K12 in frpm1617";
-	proc sql;
-    		select
-	 	min(VAR20) as min
-		,max(VAR20) as max
-		,mean(VAR20) as mean
-		,median(VAR20) as med
-		,nmiss(VAR20) as missing
-    		from
-		frpm1617
-    		;
-	quit;
-	title;
-	title "Inspect PctGE21, after converting to numeric values, in act17";
-	proc sql;
-    		select
-	 	min(input(PctGE21,best12.)) as min
-		,max(input(PctGE21,best12.)) as max
-		,mean(input(PctGE21,best12.)) as mean
-		,median(input(PctGE21,best12.)) as med
-		,nmiss(input(PctGE21,best12.)) as missing
-    		from
-		act17
-    		;
-		quit;
-		title;
-	title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
-	proc sql;
-    		select
-	 	input(NumTstTakr,best12.) as Number_of_testers
-		,count(*)
-    		from
-		act17
-    		group by
-		calculated Number_of_testers
-    		;	
-	quit;
-	title;
-	
-	title "Inspect TOTAL, after converting to numeric values, in dropouts17";
-	proc sql;
-		select
-		min(DTOT) as min
-		,max(DTOT) as max
-		,mean(DTOT) as mean
-		,median(DTOT) as med
-		,nmiss(DTOT) as missing
-    		from
-		dropouts17
-    		;
-	quit;
-	title;
-	*/
-*combine frpm1516 and frpm1617 horizontally using a data-step match-merge;
-
-	/*
-	data twoyears;
-		retain
-			School_Code
-			Academic_Year
-			District_Code
-			School_Code
-			School_Type
-			VAR22
-			VAR23
-			VAR24
-				;
-		keep
-		    School_Code
-			Academic_Year
-			District_Code
-			School_Code
-			School_Type
-	        VAR22
-			VAR23
-			VAR24
-	    ;
-	   merge
-	        frpm1516(
-	            rename=(
-				VAR22 = Percent_Elgible
-				VAR23 = Enrollment
-				VAR24 = Meal_Count
-	                    )
-	              ) 
-
-	        frpm1617(
-	            rename=(
-				VAR22 = Percent_Elgible
-				VAR23 = Enrollment
-				VAR24 = Meal_Count
-			
-	                    )
-	             )
-	;
-	    by  School_Code;
-	run; 
-
-	proc sort data = twoyears;
-	    by School_Code;
-	run;
-
-	* combine frpm1617 and frpm1516 horizontally using proc sql;
- 
-	proc sql;
-	    create table sqltwoyears as
-	        select
-	             coalesce(A.School_Code,B.School_Code) as School_Code
-	            ,coalesce(A.var22) as Percent_elgible
-	            ,coalesce(A.var23) as Enrollment
-				,coalesce(A.var24) as Meal_Count
-	        from
-	            frpm1516 as A
-	            full join
-	            frpm1617 as B
-	            on A.School_Code=B.School_Code
-	        order by
-	            School_Code
-
-	    /*  
-	    title "Inspect Percent_Eligible_Free_K12 in frpm1516";
-	    proc sql;
-	        select
-		     min(VAR22) as min
-		    ,max(VAR22) as max
-		    ,mean(VAR22) as mean
-		    ,median(VAR22) as med
-		    ,nmiss(VAR22) as missing
-	        from
-		    frpm1516
-	        ;
-	    quit;
-	    title;
-	    title "Inspect Percent_Eligible_Free_K12 in frpm1617";
-	    proc sql;
-	        select
-		     min(VAR20) as min
-		    ,max(VAR20) as max
-		    ,mean(VAR20) as mean
-		    ,median(VAR20) as med
-		    ,nmiss(VAR20) as missing
-	        from
-		    frpm1617
-	        ;
-	    quit;
-	    title;
-	    title "Inspect NUMTSTTAKR, after converting to numeric values, in act17";
-	    proc sql;
-	        select
-		     input(NumTstTakr,best12.) as Number_of_testers
-		    ,count(*)
-	        from
-		    act17
-	        group by
-		    calculated Number_of_testers
-	        ;
-	    quit;
-	    title;
-	    title "Inspect TOTAL dropout, after converting to numeric values, in drop17";
-	    proc sql;
-	        select
-		     min(TTD) as min
-		    ,max(TTD) as max
-		    ,mean(TTD) as mean
-		    ,median(TTD) as med
-		    ,nmiss(TTD) as missing
-	        from
-		    drop17
-	        ;
-	    quit;
-	    title;
-	    title "Inspect TOTAL enrollment, after converting to numeric values, in drop17";
-	    
-	    proc sql;
-	        select
-		     min(TTE) as min
-		    ,max(TTE) as max
-		    ,mean(TTE) as mean
-		    ,median(TTE) as med
-		    ,nmiss(TTE) as missing
-	        from
-		    drop17
-	        ;
-	    quit;
-	    title;
-	    */
-
-
-	* combine act17 and drop17 horizontally using a data-step match-merge;
-	* note: After running the data step and proc sort step below several times
-	  and averaging the fullstimer output in the system log, they tend to take
-	  about 0.06 seconds of combined "real time" to execute and a maximum of
-	  about 1.2 MB of memory (990 KB for the data step vs. 2895 KB for the
-	  proc sort step) on the computer they were tested on;
-
-	/*
-	data act_and_drop17_v1;
-	    retain
-		    CDS_code
-			School
-			District
-			Number_of_ACT_Takers
-			Number_Dropout
-	        Number_Erollment
-		;
-		keep
-		    CDS_code
-			School
-			District
-			Number_of_ACT_Takers
-			Number_Dropout
-	        Number_Erollment
-	    ;
-	   merge
-	        drop17(
-	            rename=(
-				TTD = Number_Dropout
-				TTE = Number_Erollment
-	                    )
-	              ) 
-
-	        act17(
-	            rename=(
-				cds = CDS_code
-				sname = School
-				dname= District
-			
-	                    )
-	             )
-	;
-	    by  CDS_code;
-	    Number_of_ACT_Takers=input(NumTstTakr, best12.);
-	run; 
-
-	proc sort data=act_and_drop17_v1;
-	    by CDS_code;
-	run;
-
-	* combine act17 and drop17 horizontally using proc sql;
-	* note: After running the proc sql step below several times and averaging
-	  the fullstimer output in the system log, they tend to take about 0.04
-	  seconds of "real time" to execute and about 6760k of memory on the computer
-	  they were tested on. Consequently, the proc sql step appears to take roughly
-	  the same amount of time to execute as the combined data step and proc sort
-	  steps above, but to use roughly twice times as much memory;
-
-	proc sql;
-	    create table act_and_drop17_v2 as
-	        select
-	             coalesce(A.CDS,B.CDS_Code) as CDS_Code
-	            ,coalesce(A.sname) as School
-	            ,coalesce(A.dname) as District
-	            ,input(A.NumTstTakr,best12.) as Number_of_ACT_Takers
-	            ,coalesce(B.TTD) as Number_Dropout
-				,coalesce(B.TTE) as Number_Erollment
-	        from
-	            act17 as A
-	            full join
-	            drop17 as B
-	            on A.CDS=B.CDS_Code
-	        order by
-	            CDS_Code
-
-	    ;
-	quit;
-
-
-
-	* verify that twoyears and sqltwoyears are identical;
-	proc compare
-	        base=twoyears
-	        compare=sqltwoyears
-	        novalues
-	    ;
-	run;
-
-	* verify that act_and_drop17_v1 and act_and_drop17_v2 are identical;
-	proc compare
-	        base=act_and_drop17_v1
-	        compare=act_and_drop17_v2
-	        novalues
-	    ;
-	run;
-	*/
-
-*creating analytical dataset named "analytical_merged";
+/*	
+* created by MS creating analytical dataset named "analytical_merged ";
 proc sql;
     create table analytical_merged as
         select
@@ -673,95 +371,8 @@ proc sql;
         ;
     quit;
     title;
-    */
-	/*
-	* combine act17 and drop17 horizontally using a data-step match-merge;
-	* note: After running the data step and proc sort step below several times
-	  and averaging the fullstimer output in the system log, they tend to take
-	  about 0.06 seconds of combined "real time" to execute and a maximum of
-	  about 1.2 MB of memory (990 KB for the data step vs. 2895 KB for the
-	  proc sort step) on the computer they were tested on;
-
-	data act_and_drop17_v1;
-	    retain
-		    CDS_code
-			School
-			District
-			Number_of_ACT_Takers
-			Number_Dropout
-	        Number_Erollment
-		;
-		keep
-		    CDS_code
-			School
-			District
-			Number_of_ACT_Takers
-			Number_Dropout
-	        Number_Erollment
-	    ;
-	   merge
-	        drop17(
-	            rename=(
-				TTD = Number_Dropout
-				TTE = Number_Erollment
-	                    )
-	              ) 
-
-	        act17(
-	            rename=(
-				cds = CDS_code
-				sname = School
-				dname= District
-			
-	                    )
-	             )
-	;
-	    by  CDS_code;
-	    Number_of_ACT_Takers=input(NumTstTakr, best12.);
-	run; 
-
-	proc sort data=act_and_drop17_v1;
-	    by CDS_code;
-	run;
-
-	* combine act17 and drop17 horizontally using proc sql;
-	* note: After running the proc sql step below several times and averaging
-	  the fullstimer output in the system log, they tend to take about 0.04
-	  seconds of "real time" to execute and about 6760k of memory on the computer
-	  they were tested on. Consequently, the proc sql step appears to take roughly
-	  the same amount of time to execute as the combined data step and proc sort
-	  steps above, but to use roughly twice times as much memory;
-
-	proc sql;
-	    create table act_and_drop17_v2 as
-	        select
-	             coalesce(A.CDS,B.CDS_Code) as CDS_Code
-	            ,coalesce(A.sname) as School
-	            ,coalesce(A.dname) as District
-	            ,input(A.NumTstTakr,best12.) as Number_of_ACT_Takers
-	            ,coalesce(B.TTD) as Number_Dropout
-				,coalesce(B.TTE) as Number_Erollment
-	        from
-	            act17 as A
-	            full join
-	            drop17 as B
-	            on A.CDS=B.CDS_Code
-	        order by
-	            CDS_Code
-	    ;
-	quit;
-
-
-	* verify that act_and_drop17_v1 and act_and_drop17_v2 are identical;
-	proc compare
-	        base=act_and_drop17_v1
-	        compare=act_and_drop17_v2
-	        novalues
-	    ;
-	run;
-	*/
-
-*creating analytical dataset named "analytical_merged";
+   
+* created by MS creating analytical dataset named "analytical_merged";
 proc sql;
     create table analytical_merged as
         select
@@ -836,8 +447,9 @@ proc sql;
         CDS_Code
     ;
 quit;
+*/
 
-* build analytic dataset from raw datasets imported above, including only the
+* created by JL, build analytic dataset from raw datasets imported above,including only the
 columns and minimal data-cleaning/transformation needed to address each
 research questions/objectives in data-analysis files;
 proc sql;
@@ -922,7 +534,7 @@ proc sql;
                     ,TTD
                      AS Number_of_Total_Dropout
                 from
-                    drop17
+                    drop17__
             ) as C
             on A.CDS_Code = C.CDS_Code
             full join
@@ -949,10 +561,6 @@ proc sql;
     ;
 quit;
 
-
-
-
-
 * check cde_analytic_file_raw for rows whose unique id values are repeated,
 missing, or correspond to non-schools, where the column CDS_Code is intended
 to be a primary key;
@@ -975,8 +583,6 @@ data cde_analytic_file_raw_bad_ids;
             output;
         end;
 run;
-
-
 * remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
 * after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
   either of the rows in duplicate-row pairs can be removed without losing
@@ -991,44 +597,4 @@ proc sort
         CDS_Code
     ;
 run;
-
-* check cde_analytic_file_raw for rows whose unique id values are repeated,
-missing, or correspond to non-schools, where the column CDS_Code is intended
-to be a primary key;
-* after executing this data step, we see that the full joins used above
-introduced duplicates in cde_analytic_file_raw, which need to be mitigated
-before proceeding;
-
-data cde_analytic_file_raw_bad_ids;
-    set cde_analytic_file_raw;
-    by CDS_Code;
-
-    if
-        first.CDS_Code*last.CDS_Code = 0
-        or
-        missing(CDS_Code)
-        or
-        substr(CDS_Code,8,7) in ("0000000","0000001")
-    then
-        do;
-            output;
-        end;
-run;
-
-* remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
-* after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
-  either of the rows in duplicate-row pairs can be removed without losing
-  values for analysis, so we use proc sort to indiscriminately remove
-  duplicates, after which column CDS_Code is guaranteed to form a primary key;
-proc sort
-        nodupkey
-        data=cde_analytic_file_raw
-        out=cde_analytic_file
-    ;
-    by
-        CDS_Code
-    ;
-run;
-
-
 
