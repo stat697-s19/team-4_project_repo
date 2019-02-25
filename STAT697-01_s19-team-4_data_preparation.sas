@@ -4,13 +4,13 @@
 * (set window width to banner width to calibrate line length to 80 characters *;
 *******************************************************************************;
 
-* 
+*
 [Dataset 1 Name] frpm1516
-[Dataset Description] Student Poverty Free or Reduced Price Meals (FRPM) Data, 
+[Dataset Description] Student Poverty Free or Reduced Price Meals (FRPM) Data,
 AY2015-16
 [Experimental Unit Description] California public K-12 schools in AY2015-16
 [Number of Observations] 10,453
-                    
+
 [Number of Features] 28
 [Data Source] The file http://www.cde.ca.gov/ds/sd/sd/documents/frpm1516.xls
 was downloaded and edited to produce file frpm1415-edited.xls by deleting
@@ -18,9 +18,9 @@ worksheet "Title Page", deleting row 1 from worksheet "FRPM School-Level Data",
 reformatting column headers in "FRPM School-Level Data" to remove characters
 disallowed in SAS variable names, and setting all cell values to "Text" format
 [Data Dictionary] http://www.cde.ca.gov/ds/sd/sd/fsspfrpm.asp
-[Unique ID Schema] The columns "County Code", "District Code", and "School 
-Code"form a composite key, which together are equivalent to the unique id 
-column CDS_CODE in dataset dropouts17, and which together are also equivalent 
+[Unique ID Schema] The columns "County Code", "District Code", and "School
+Code"form a composite key, which together are equivalent to the unique id
+column CDS_CODE in dataset dropouts17, and which together are also equivalent
 to the unique id column CDS in dataset act17.
 ;
 %let inputDataset1DSN = frpm1516_raw;
@@ -36,7 +36,7 @@ https://github.com/stat697/team-4_project_repo/blob/master/data/frpm1516_edited.
 AY2016-17
 [Experimental Unit Description] California public K-12 schools in AY2016-17
 [Number of Observations] 10,478
-                    
+
 [Number of Features] 28
 [Data Source] The file http://www.cde.ca.gov/ds/sd/sd/documents/frpm1617.xls
 was downloaded and edited to produce file frpm1415-edited.xls by deleting
@@ -44,9 +44,9 @@ worksheet "Title Page", deleting row 1 from worksheet "FRPM School-Level Data",
 reformatting column headers in "FRPM School-Level Data" to remove characters
 disallowed in SAS variable names, and setting all cell values to "Text" format
 [Data Dictionary] http://www.cde.ca.gov/ds/sd/sd/fsspfrpm.asp
-[Unique ID Schema] The columns "County Code", "District Code", and "School 
-Code" form a composite key, which together are equivalent to the unique id 
-column CDS_CODE in dataset dropouts17, and which together are also equivalent 
+[Unique ID Schema] The columns "County Code", "District Code", and "School
+Code" form a composite key, which together are equivalent to the unique id
+column CDS_CODE in dataset dropouts17, and which together are also equivalent
 to the unique id column CDS in dataset act17.
 ;
 %let inputDataset2DSN = frpm1617_raw;
@@ -58,11 +58,11 @@ https://github.com/stat697/team-4_project_repo/blob/master/data/frpm1617_edited.
 
 *
 [Dataset 3 Name] dropouts17
-[Dataset Description] Grade seven through twelve dropouts and enrollment by 
+[Dataset Description] Grade seven through twelve dropouts and enrollment by
 race/ethnic designation and gender by school, AY2016-17
 [Experimental Unit Description] California public K-12 schools in AY2016-17
-[Number of Observations] 59,599  
- 
+[Number of Observations] 59,599
+
 [Number of Features] 20
 [Data Source] The file
 http://dq.cde.ca.gov/dataquest/dlfile/dlfile.aspx?cLevel=School&cYear=2016-17&cCat
@@ -84,8 +84,8 @@ https://github.com/stat697/team-4_project_repo/blob/master/data/dropouts17.xls?r
 [Dataset 4 Name] act17
 [Dataset Description] ACT Test Results, AY2016-17
 [Experimental Unit Description] California public K-12 schools in AY2016-17
-[Number of Observations] 2,252 
- 
+[Number of Observations] 2,252
+
 [Number of Features] 16
 [Data Source] The file http://www3.cde.ca.gov/researchfiles/satactap/act17.xls
 was downloaded and edited to produce file act17-edited.xls by opening in Excel
@@ -152,7 +152,7 @@ options fullstimer;
 District_Code, and School_Code are intended to form a composite key;
 proc sql;
     /* check for duplicate unique id values; after executing this query, we
-       see that frpm1516_raw_dups only has one row, which just happens to 
+       see that frpm1516_raw_dups only has one row, which just happens to
        have all three elements of the componsite key missing, which we can
        mitigate as part of eliminating rows having missing unique id component
        in the next query */
@@ -172,11 +172,11 @@ proc sql;
             row_count_for_unique_id_value > 1
     ;
     /* remove rows with missing unique id components, or with unique ids that do
-	   not correspond to schools; after executing this query, the new dataset 
-	   frpm1516 will have no duplicate/repeated unique id values,and all unique 
+	   not correspond to schools; after executing this query, the new dataset
+	   frpm1516 will have no duplicate/repeated unique id values,and all unique
 	   id values will correspond to our experimenal units of interest, which are
-	   California Public K-12 schools; this means the columns County_Code, 
-	   District_Code, and School_Code in frpm1516 are guaranteed to form a 
+	   California Public K-12 schools; this means the columns County_Code,
+	   District_Code, and School_Code in frpm1516 are guaranteed to form a
 	   composite key */
     create table frpm1516 as
         select
@@ -197,9 +197,9 @@ proc sql;
 quit;
 
 
-* do the same process as frpm1516: first check frpm1617_raw for bad unique id 
-  values, where the columns County_Code, District_Code, and School_Code are 
-  intended to form a composite key, then remove rows with missing unique id 
+* do the same process as frpm1516: first check frpm1617_raw for bad unique id
+  values, where the columns County_Code, District_Code, and School_Code are
+  intended to form a composite key, then remove rows with missing unique id
   components, or with unique ids that do not correspond to schools;
 proc sql;
     create table frpm1617_raw_dups as
@@ -234,15 +234,15 @@ proc sql;
 quit;
 
 
-* Check dropouts17_raw for bad unique id values, where the column CDS_CODE is 
+* Check dropouts17_raw for bad unique id values, where the column CDS_CODE is
   intended to be a primary key;
 proc sql;
     /* check for unique id values that are repeated, missing, or correspond to
-       non-schools; after executing this query, we see that 
-       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code 
+       non-schools; after executing this query, we see that
+       dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code
        that need to be removed */
     create table dropouts17_raw_bad_uqique_ids as
-	    select 
+	    select
 		    A.*
 		from
 		    dropouts17_raw as A
@@ -264,28 +264,50 @@ proc sql;
 			or
 			substr(CDS_CODE, 8,7) in ("0000000","0000001")
 		;
-    create table dropouts17 as 
+    create table dropouts17 as
 	    select
 		    *
 		from
 		    dropouts17_raw
-		where 
+		where
 		    substr(CDS_CODE,8, 7) not in ("0000000","0000001")
-			
+
 	;
 quit;
+* because the numer of the total enrollment and dropout is not including the
+  grade seven and grade eight, also the total number of the enrollment and
+  dropout is saprate by ehic and gender, we should edit the dropouts17 first;
+* edit dropouts17into distinct CDS_CODE also add the grade seven and grade
+  eight into the total enrollment and total drop number individually, then
+  name the new work drop17;
+proc sql;
+    	create table drop17_ as
+    	select CDS_CODE,
+           	E7+E8+ ETOT as TE,
+           	D7+D8+ DTOT  as TD
+	    from dropouts17;
+
+	proc sql;
+    	create table drop17__ as
+    	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
+	    	from drop17_
+			group by CDS_CODE;
+
+	quit;
+
+
 
 
 
 * check act17_raw for bad unique id values, where the column cds is intended to
   be a primary key;
 proc sql;
-    /* check for unique id values that are repeated, missing, or correspond to 
-       non-schools; after executing this query, we see that 
-       act17_raw_bad_unique_ids only has non-school values of cds that need to 
+    /* check for unique id values that are repeated, missing, or correspond to
+       non-schools; after executing this query, we see that
+       act17_raw_bad_unique_ids only has non-school values of cds that need to
        be removed */
     create table act17_raw_bad_uqique_ids as
-	    select 
+	    select
 		    A.*
 		from
 		    act17_raw as A
@@ -307,30 +329,30 @@ proc sql;
 			or
 			substr(cds, 8,7) in ("0000000","0000001")
 		;
-    create table act17 as 
+    create table act17 as
 	    select
 		    *
 		from
 		    act17_raw
-		where 
+		where
 		    /* ne means not equal to */
 		    substr(cds,8, 7) ne "0000000"
-			
+
 	;
 quit;
 
- 
-* because the numer of the total enrollment and dropout is not including the 
-  grade seven and grade eight, also the total number of the enrollment and 
+
+* because the numer of the total enrollment and dropout is not including the
+  grade seven and grade eight, also the total number of the enrollment and
   dropout is saprate by ehic and gender, we should edit the dropouts17 first;
 * edit dropouts17into distinct CDS_CODE also add the grade seven and grade
-  eight into the total enrollment and total drop number individually, then 
+  eight into the total enrollment and total drop number individually, then
   name the new work drop17;
 	proc sql;
     	create table drop17_ as
-    	select CDS_CODE, 
+    	select CDS_CODE,
            	E7+E8+ ETOT as TE,
-           	D7+D8+ DTOT  as TD 
+           	D7+D8+ DTOT  as TD
 	    from dropouts17;
 
 	proc sql;
@@ -338,9 +360,9 @@ quit;
     	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
 	    	from drop17_
 			group by CDS_CODE;
- 
+
 	quit;
-	
+
 
 
 * inspect columns of interest in cleaned versions of datasets;
@@ -393,10 +415,10 @@ quit;
 		act17
     		group by
 		calculated Number_of_testers
-    		;	
+    		;
 	quit;
 	title;
-	
+
 	title "Inspect TOTAL, after converting to numeric values, in dropouts17";
 	proc sql;
 		select
@@ -442,26 +464,26 @@ quit;
 				VAR23 = Enrollment
 				VAR24 = Meal_Count
 	                    )
-	              ) 
+	              )
 
 	        frpm1617(
 	            rename=(
 				VAR22 = Percent_Elgible
 				VAR23 = Enrollment
 				VAR24 = Meal_Count
-			
+
 	                    )
 	             )
 	;
 	    by  School_Code;
-	run; 
+	run;
 
 	proc sort data = twoyears;
 	    by School_Code;
 	run;
 
 	* combine frpm1617 and frpm1516 horizontally using proc sql;
- 
+
 	proc sql;
 	    create table sqltwoyears as
 	        select
@@ -477,7 +499,7 @@ quit;
 	        order by
 	            School_Code
 
-	    /*  
+	    /*
 	    title "Inspect Percent_Eligible_Free_K12 in frpm1516";
 	    proc sql;
 	        select
@@ -530,7 +552,7 @@ quit;
 	    quit;
 	    title;
 	    title "Inspect TOTAL enrollment, after converting to numeric values, in drop17";
-	    
+
 	    proc sql;
 	        select
 		     min(TTE) as min
@@ -576,20 +598,20 @@ quit;
 				TTD = Number_Dropout
 				TTE = Number_Erollment
 	                    )
-	              ) 
+	              )
 
 	        act17(
 	            rename=(
 				cds = CDS_code
 				sname = School
 				dname= District
-			
+
 	                    )
 	             )
 	;
 	    by  CDS_code;
 	    Number_of_ACT_Takers=input(NumTstTakr, best12.);
-	run; 
+	run;
 
 	proc sort data=act_and_drop17_v1;
 	    by CDS_code;
@@ -643,7 +665,7 @@ quit;
 	run;
 	*/
 
-	
+
 	* combine act17 and drop17 horizontally using a data-step match-merge;
 	* note: After running the data step and proc sort step below several times
 	  and averaging the fullstimer output in the system log, they tend to take
@@ -674,20 +696,20 @@ quit;
 					TTD = Number_Dropout
 					TTE = Number_Erollment
 		                    )
-		              ) 
+		              )
 
 		        act17(
 		            rename=(
 					cds = CDS_code
 					sname = School
 					dname= District
-				
+
 		                    )
 		             )
 		;
 		    by  CDS_code;
 		    Number_of_ACT_Takers=input(NumTstTakr, best12.);
-		run; 
+		run;
 
 		proc sort data=act_and_drop17_v1;
 		    by CDS_code;
@@ -749,9 +771,9 @@ proc sql;
              label "Number of ACT Takers in 2017"
             ,D.Percent_with_ACT_above_21 format best12.
              label "Percentage of ACT takers scoring 21+ 2017"
-			,C.ETHNIC, C.GENDER, C.E7, C.E8, C.E9, C.E10, C.E11, C.E12, 
+			,C.ETHNIC, C.GENDER, C.E7, C.E8, C.E9, C.E10, C.E11, C.E12,
 			C.ETOT, C.D7, C.D8, C.D9, C.D10, C.D11, C.D12, C.DTOT
-			
+
         from
 
             (
@@ -808,6 +830,7 @@ proc sql;
         CDS_Code
     ;
 quit;
+*/
 
 
 
@@ -843,12 +866,12 @@ proc sql;
              label "Rate_of_Dropout from grade seven to grade twelve"
             ,calculated Number_of_Total_Remain
              / C.Number_of_Total_Enrollment format percent12.2
-             AS Rate_of_Remain 
+             AS Rate_of_Remain
              label "Rate_of_Remain from grade seven to grade twelve"
             ,D.Number_of_ACT_Takers format comma12.
              label "Number of ACT Takers in AY2016-17"
             ,D.Percent_with_ACT_above_21 format comma12.2
-             label "Percentage of ACT Takers Scoring 21+ in AY2016-17"      
+             label "Percentage of ACT Takers Scoring 21+ in AY2016-17"
         from
             (
                 select
@@ -947,8 +970,6 @@ data cde_analytic_file_raw_bad_ids;
             output;
         end;
 run;
-
-
 * remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
 * after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
   either of the rows in duplicate-row pairs can be removed without losing
@@ -963,5 +984,3 @@ proc sort
         CDS_Code
     ;
 run;
-
-
