@@ -192,29 +192,29 @@ footnote2 justify= left
 
 * calculate the first 10 school that the drop rate is lowest;
    
-	proc sql outobs=10;
-	    select
-	         School
-	        ,District
-	        ,Number_of_ACT_Takers/* NumTstTakr from act17 */
-	        ,Number_of_Total_Dropout /* TTD from drop17 */
-			,Number_of_Total_Enrollment/* TTE from drop17*/
-	        ,Number_of_Total_Remain
-	        ,Rate_of_Remain
-			,Rate_of_Dropout
-	    from
-	        cde_analytic_file
-	    where
-	        Number_of_Total_Enrollment > 0
-	        and
-	        Number_of_Total_Dropout > 0
-			and
-			Number_of_Total_Remain >0
-	    order by
-		    Rate_of_Dropout desc
+proc sql outobs=10;
+	select
+	     School
+	    ,District
+	    ,Number_of_ACT_Takers/* NumTstTakr from act17 */
+	    ,Number_of_Total_Dropout /* TTD from drop17 */
+		,Number_of_Total_Enrollment/* TTE from drop17*/
+	    ,Number_of_Total_Remain
+	    ,Rate_of_Remain
+		,Rate_of_Dropout
+	from
+	    cde_analytic_file
+	where
+	    Number_of_Total_Enrollment > 0
+	    and
+	    Number_of_Total_Dropout > 0
+	    and
+	    Number_of_Total_Remain >0
+	 order by
+		Rate_of_Dropout desc
                
-	    ;
-	quit;
+	;
+quit;
 	
 *
 Question: What’s the top ten schools were the number of high dropout? and 
