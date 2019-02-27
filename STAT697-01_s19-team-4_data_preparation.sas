@@ -116,6 +116,7 @@ was downloaded and edited to produce file act17-edited.xls by opening in Excel
 and setting all cell values to "Text" format
 
 [Data Dictionary] https://www.cde.ca.gov/ds/sp/ai/reclayoutact17.asp
+
 [Unique ID Schema] The column CDS is a unique id.
 ;
 
@@ -314,15 +315,13 @@ proc sql;
            	D7+D8+ DTOT  as TD
 	    from dropouts17;
 
-	proc sql;
+proc sql;
     	create table drop17__ as
     	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
 	    	from drop17_
 			group by CDS_CODE;
 
-	quit;
-
-
+quit;
 
 
 
@@ -367,29 +366,6 @@ proc sql;
 
 	;
 quit;
-
-
-* because the numer of the total enrollment and dropout is not including the
-  grade seven and grade eight, also the total number of the enrollment and
-  dropout is saprate by ehic and gender, we should edit the dropouts17 first;
-* edit dropouts17into distinct CDS_CODE also add the grade seven and grade
-  eight into the total enrollment and total drop number individually, then
-  name the new work drop17;
-	proc sql;
-    	create table drop17_ as
-    	select CDS_CODE,
-           	E7+E8+ ETOT as TE,
-           	D7+D8+ DTOT  as TD
-	    from dropouts17;
-
-	proc sql;
-    	create table drop17__ as
-    	select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
-	    	from drop17_
-			group by CDS_CODE;
-
-	quit;
-
 
 
 * inspect columns of interest in cleaned versions of datasets;
