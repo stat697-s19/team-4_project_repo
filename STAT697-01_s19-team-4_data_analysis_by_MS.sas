@@ -142,7 +142,6 @@ analysis should be done on schools that have null values in this column. They
 won't be done in the primary analysis because they need to be filtered out. 
 ;
 
-
 	/*
 	proc sql;
 	    create table act_dropout as
@@ -164,7 +163,6 @@ won't be done in the primary analysis because they need to be filtered out.
 	    ;
 	quit;
 	*/
-
 
 	/*title 'Average for Schools Having Zero Dropouts';
 	proc sql outobs=10;
@@ -193,6 +191,7 @@ won't be done in the primary analysis because they need to be filtered out.
 	*/
 
 *from using the analytical file, the same analysis is done as above;
+
 data analytical_merged;
    set analytical_merged;
    droprate = DTOT / ETOT;
@@ -249,7 +248,6 @@ These queries show that the dopout rates are 0.133 for schools that
 do not report pctGE and 0.010 for schools that do.
 */
 
-
 proc sql;
     select
         mean(droprate) as Mean_for_missing_pctge
@@ -274,4 +272,4 @@ proc sql;
 	where 
 		droprate is not missing and pctge is not missing
     ;
-quit;
+quit; *try with proc means later;
