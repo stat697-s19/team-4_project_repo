@@ -305,6 +305,7 @@ quit;
 * because the numer of the total enrollment and dropout is not including the
   grade seven and grade eight, also the total number of the enrollment and
   dropout is saprate by ehic and gender, we should edit the dropouts17 first;
+
 * edit dropouts17into distinct CDS_CODE also add the grade seven and grade
   eight into the total enrollment and total drop number individually, then
   name the new work drop17;
@@ -586,6 +587,7 @@ quit;
 
 
 	* combine act17 and drop17 horizontally using a data-step match-merge;
+	
 	* note: After running the data step and proc sort step below several times
 	  and averaging the fullstimer output in the system log, they tend to take
 	  about 0.06 seconds of combined "real time" to execute and a maximum of
@@ -636,6 +638,7 @@ quit;
 
 
 	* combine act17 and drop17 horizontally using proc sql;
+	
 	* note: After running the proc sql step below several times and averaging
 	  the fullstimer output in the system log, they tend to take about 0.04
 	  seconds of "real time" to execute and about 6760k of memory on the computer
@@ -684,6 +687,7 @@ quit;
 
 
 	* combine act17 and drop17 horizontally using a data-step match-merge;
+	
 	* note: After running the data step and proc sort step below several times
 	  and averaging the fullstimer output in the system log, they tend to take
 	  about 0.06 seconds of combined "real time" to execute and a maximum of
@@ -734,6 +738,7 @@ quit;
 
 
 	* combine act17 and drop17 horizontally using proc sql;
+	
 	* note: After running the proc sql step below several times and averaging
 	  the fullstimer output in the system log, they tend to take about 0.04
 	  seconds of "real time" to execute and about 6760k of memory on the computer
@@ -968,6 +973,7 @@ quit;
 * check cde_analytic_file_raw for rows whose unique id values are repeated,
 missing, or correspond to non-schools, where the column CDS_Code is intended
 to be a primary key;
+
 * after executing this data step, we see that the full joins used above
 introduced duplicates in cde_analytic_file_raw, which need to be mitigated
 before proceeding;
@@ -988,6 +994,7 @@ data cde_analytic_file_raw_bad_ids;
         end;
 run;
 * remove duplicates from cde_analytic_file_raw with respect to CDS_Code;
+
 * after inspecting the rows in cde_analytic_file_raw_bad_ids, we see that
   either of the rows in duplicate-row pairs can be removed without losing
   values for analysis, so we use proc sort to indiscriminately remove
