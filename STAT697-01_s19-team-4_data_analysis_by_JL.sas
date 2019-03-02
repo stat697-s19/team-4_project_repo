@@ -54,6 +54,22 @@ proc sql outobs=10;
 quit;
 
 
+title1
+'Plot illustrating the negative correlation between Percent_Eligible_FRPM_K12_1617 and Percent_with_ACT_above_21'
+;
+
+footnote1
+"In the above plot, we can see how values of Percent_with_ACT_above_21 tend to decrease as values of Percent_Eligible_FRPM_K12_1617."
+;
+
+proc sgplot data=cde_analytic_file;
+    scatter
+        x=Percent_Eligible_FRPM_K12_1617
+        y=Percent_with_ACT_above_21
+    ;
+run;
+
+
 *
 Question: What are the top ten districts that experienced the biggest increase 
 and decrease in "Percent (%) Eligible Free (K-12)" between AY2015-16 and AY2016-17? 
@@ -178,7 +194,7 @@ run;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 title1 justify= left
-'Question: What’s the top ten schools were the number of high dropout? and the corresponding number of ACT takers'?
+'Question: What is the top ten schools were the number of high dropout? and the corresponding number of ACT takers'?
 ;
 title2 justify= left
 'Rationale: This would help identify whether ACT are associated with the number of high dropout students, if so, providing a strong conformation for the negative relationship between the number of ACT taker and dropput students.'
