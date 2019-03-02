@@ -34,7 +34,7 @@ footnote3 justify= left
 footnote4 justify= left
 'Based on above analysis, we had better to consider if we should include the Camp Glenwood school and Rising Sun school or consider them as outliers in our further study.'
 ;
-
+/*
 proc sql outobs=10;
 	select 
 		 School
@@ -52,7 +52,36 @@ proc sql outobs=10;
 		FRPM_Percentage_Point_Increase desc
 	;
 quit;
+*/
+proc sort
+         data =cde_analytic_file
+		 out=cde_anlytic_file_by_FRPM_Incr
+	;
+	by
+	     descending FRPM_Percentage_point_Increase
+		 School
+	;
+	where
+	    Percent_Eligible_FRPM_K12_1516 >0
+		and
+		Percent_Eligible_FRPM_K12_1617 >0
+	;
+run;
 
+proc report data=cde_anlytic_file_by_FRPM_Incr(obs=10);
+    columns
+	    School
+		District
+		Percent_Eligible_FRPM_K12_1516
+		Percent_Eligible_FRPM_K12_1617
+        FRPM_Percentage_point_Increase
+	;
+
+run;
+
+* clear titles/footnotes;
+title;
+footnote;
 
 title1
 'Plot illustrating the negative correlation between Percent_Eligible_FRPM_K12_1617 and Percent_with_ACT_above_21'
@@ -93,7 +122,7 @@ title1 justify= left
 'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What’s the top ten schools were the number of high dropout?'
 ;
 title2 justify= left
-'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools most in need of more help with the FRPM.'
+'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools are most in need of more help with the FRPM.'
 ;
 footnote1 justify= left
 'Actually, we can find the the p-value of the regression is <0.0001, which is significant to draw the conclusion that there is a correlation between the two vaiables, and it is negative relationship which is -0.866'
@@ -122,6 +151,10 @@ proc corr
 ;
 run;
 
+
+* clear titles/footnotes;
+title;
+footnote;
 
 *
 Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the proportion 
@@ -190,6 +223,10 @@ proc corr
 ;
 run;
 
+* clear titles/footnotes;
+title;
+footnote;
+
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
@@ -231,6 +268,10 @@ proc sql outobs=10;
                
 	;
 quit;
+
+* clear titles/footnotes;
+title;
+footnote;
 	
 *
 Question: What’s the top ten schools were the number of high dropout? and 
