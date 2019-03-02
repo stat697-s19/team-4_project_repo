@@ -91,13 +91,6 @@ footnote1
 "In the above plot, we can see how values of Percent_with_ACT_above_21 tend to decrease as values of Percent_Eligible_FRPM_K12_1617."
 ;
 
-proc sgplot data=cde_analytic_file;
-    scatter
-        x=Percent_Eligible_FRPM_K12_1617
-        y=Percent_with_ACT_above_21
-    ;
-run;
-
 
 *
 Question: What are the top ten districts that experienced the biggest increase 
@@ -110,7 +103,15 @@ Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1516
 to the column of the same name from frpm1617.
 
 Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
-be excluded from this analysis, since they are potentially missing data values 
+be excluded from this analysis, since they are potentially missing data values
+
+Methodology: Use proc sort to create a temporary sorted table in descending
+order by FRPM_Percentage_Point_Increase, with ties broken by school name. Then
+use proc report to print the first ten rows of the sorted dataset.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data and outliers, e.g., by using a 
+previous year's data or a rolling average of previous years' data as a proxy.
 ;
 
 
@@ -150,7 +151,12 @@ proc corr
 
 ;
 run;
-
+proc sgplot data=cde_analytic_file;
+    scatter
+        x=Percent_Eligible_FRPM_K12_1617
+        y=Percent_with_ACT_above_21
+    ;
+run;
 
 * clear titles/footnotes;
 title;
@@ -170,6 +176,13 @@ to the column PCTGE1500 from act17.
 Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
 be excluded from this analysis, since they are potentially missing data values,
 and missing values of PctGE21 should also be excluded.
+
+Methodology: Use proc corr to perform a correlation analysis, and then use proc
+sgplot to output a scatterplot, illustrating the correlation present.
+
+Followup Steps: A possible follow-up to this approach could use a more formal
+inferential technique like linear regression, which could be used to determine
+more than the existence of a linear relationship.
 ;
 
 
@@ -192,6 +205,34 @@ footnote3 justify= left
 'Above two researcher questions show that the economy factor would play a crucial role in study performance of students and even in dropout possible.'
 ;
 
+
+
+proc corr
+		data = cde_analytic_file
+		nosimple
+      ;
+	  var
+	     Percent_Eligible_FRPM_K12_1617
+		 
+	;
+	where 
+		not(missing(Percent_Eligible_FRPM_K12_1617))
+		and 
+		not(missing(Rate_of_Dropout))
+
+;
+run;
+proc sgplot data=cde_analytic_file;
+    scatter
+        x=Percent_Eligible_FRPM_K12_1617
+        y=Rate_of_Dropout
+    ;
+run;
+
+
+* clear titles/footnotes;
+title;
+footnote;
 *
 Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number 
 of students dropout? What’s the top ten schools were the number of high dropout?
@@ -205,27 +246,15 @@ from drop17.
 
 Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
 from this analysis, since they are potentially missing data values.
+
+Methodology: Use proc corr to perform a correlation analysis, and then use proc
+sgplot to output a scatterplot, illustrating the correlation present.
+
+Followup Steps: A possible follow-up to this approach could use a more formal
+inferential technique like linear regression, which could be used to determine
+more than the existence of a linear relationship.
 ;
 
-proc corr
-		data = cde_analytic_file
-		nosimple
-      ;
-	  var
-	     Percent_Eligible_FRPM_K12_1617
-		 Rate_of_Dropout
-	;
-	where 
-		not(missing(Percent_Eligible_FRPM_K12_1617))
-		and 
-		not(missing(Rate_of_Dropout))
-
-;
-run;
-
-* clear titles/footnotes;
-title;
-footnote;
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -286,6 +315,16 @@ from drop17.
 
 Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
 from this analysis, since they are potentially missing data values.
+
+Methodology: Use proc sort to create a temporary sorted table in descending
+order by Course_Completers_Gap_Count, with ties broken by school name. Then
+use proc report to print the first ten rows of the sorted dataset.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data, e.g., by using a previous year's
+data or a rolling average of previous years' data as a proxy.
+;
+
 ;
 
 
