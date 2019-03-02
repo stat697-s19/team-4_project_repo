@@ -151,6 +151,11 @@ proc corr
 
 ;
 run;
+
+* clear titles/footnotes;
+title;
+footnote;
+
 proc sgplot data=cde_analytic_file;
     scatter
         x=Percent_Eligible_FRPM_K12_1617
@@ -158,9 +163,7 @@ proc sgplot data=cde_analytic_file;
     ;
 run;
 
-* clear titles/footnotes;
-title;
-footnote;
+
 
 *
 Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the proportion 
@@ -213,7 +216,7 @@ proc corr
       ;
 	  var
 	     Percent_Eligible_FRPM_K12_1617
-		 
+		 Rate_of_Dropout
 	;
 	where 
 		not(missing(Percent_Eligible_FRPM_K12_1617))
@@ -222,6 +225,10 @@ proc corr
 
 ;
 run;
+* clear titles/footnotes;
+title;
+footnote;
+
 proc sgplot data=cde_analytic_file;
     scatter
         x=Percent_Eligible_FRPM_K12_1617
@@ -230,9 +237,7 @@ proc sgplot data=cde_analytic_file;
 run;
 
 
-* clear titles/footnotes;
-title;
-footnote;
+
 *
 Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number 
 of students dropout? What’s the top ten schools were the number of high dropout?
@@ -250,9 +255,10 @@ from this analysis, since they are potentially missing data values.
 Methodology: Use proc corr to perform a correlation analysis, and then use proc
 sgplot to output a scatterplot, illustrating the correlation present.
 
-Followup Steps: A possible follow-up to this approach could use a more formal
-inferential technique like linear regression, which could be used to determine
-more than the existence of a linear relationship.
+Followup Steps: Unlike above relationship, from the plot we find the relationship is 
+not so strong as the we expected. A possible follow-up to this approach could use is
+a detailed technique to check if the relationship is actually existed, and if it is
+linear regression.
 ;
 
 
@@ -325,6 +331,6 @@ illegal values, and better handle missing data, e.g., by using a previous year's
 data or a rolling average of previous years' data as a proxy.
 ;
 
-;
+
 
 
