@@ -257,8 +257,8 @@ sgplot to output a scatterplot, illustrating the correlation present.
 
 Followup Steps: Unlike above relationship, from the plot we find the relationship is 
 not so strong as the we expected. A possible follow-up to this approach could use is
-a detailed technique to check if the relationship is actually existed, and if it is
-linear regression.
+a detailed technique such as R square to check if the relationship is actually 
+existed, and if it is linear regression.
 ;
 
 
