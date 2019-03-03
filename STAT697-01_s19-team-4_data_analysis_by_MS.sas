@@ -33,12 +33,17 @@ the total student population, the totals need to be summed up before rate is
 calculated
 ;
 
+data analytical_merged;
+    set analytical_merged;
+    droprate = DTOT / ETOT;
+run;
+
 /*
 This code finds the averages of male and female dropout rates per school. The 
 standard deviation is also taken to check for differents in variance.
 */
 
-title4 'Female Average Dropout Rate by School';
+title4 'Female Average Dropout Rate by School'; footnote '';
 proc sql;
 	select 
 		avg(droprate) as Average,	
@@ -49,6 +54,8 @@ proc sql;
 		gender = 'F'
 	;run;
 title;
+footnote;
+
 title 'Male Average Dropout Rate by School';
 footnote 'Males have a slightly higher dropout rate on average, but females have a much higher variance between schools.';
 proc sql;
@@ -61,11 +68,11 @@ proc sql;
 		gender = 'M'
 	;run;
 
-title 'Top Districts for Female Dropout';
-footnote 'These are the districts (in order) contributing most to female dropout';
-proc sql outobs = 10;
+title 'Top Schools for Female Dropout';
+footnote 'These are the top 3 schools (in order) contributing most to female dropout';
+proc sql outobs = 3;
 	select
-		district
+		School
 	from 
 		analytical_merged
 	where 
@@ -162,11 +169,6 @@ analysis should be done on schools that have null values in this column. They
 won't be done in the primary analysis because they need to be filtered out. 
 ;
 
-data analytical_merged;
-    set analytical_merged;
-    droprate = DTOT / ETOT;
-run;
-
 /* 
 In order to compare the different percentages of students who get good ACT 
 scores, we can make two levels: schools that have zero and non-zero dropout
@@ -187,7 +189,7 @@ quit;
 title;
 
 title 'Average for Schools Having Dropouts';
-footnote 'Dropouts are higher in schools reporting dropouts';
+footnote 'Percent of ACT scores above 21 are lower in schools reporting dropouts';
 proc sql;
     select
 		 avg(Percent_with_ACT_above_21) as avg,
@@ -213,31 +215,25 @@ proc reg data = analytical_merged;
 footnote;
 title;
 
-title'Mean Dropout - Schools Not Reporting ACT';
+title'Mean Dropout - Schools Not Reporting ACT'; footnote'';
 proc sql;
     select
         mean(droprate) as Mean_for_missing_pctge
     from
-        act17 as A
-    full join
-        dropouts17 as B
-        on A.CDS=B.CDS_Code
+        analytical_merged
 	where 
-		droprate is not missing and pctge is missing
+		droprate is not missing and Percent_with_ACT_above_21 is missing
 ;
 quit;
 
-title'Mean Dropout - Schools Not Reporting ACT';
+title'Mean Dropout - Schools Reporting ACT';
 footnote'There are many schools that have not reported PctGE - the column that has the percent of students getting a score above 21 on the ACT. These queries show that the dropout rates are 0.133 for schools that do not report pctGE and 0.010 for schools that do.';
 proc sql;
     select
     	mean(droprate) as Mean_for_reported_pctge
     from
-        act17 as A
-    full join
-        dropouts17 as B
-        on A.CDS=B.CDS_Code
+        analytical_merged
 	where 
-		droprate is not missing and pctge is not missing
+		droprate is not missing and Percent_with_ACT_above_21 is not missing
     ;
 quit;
