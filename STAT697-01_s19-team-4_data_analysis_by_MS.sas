@@ -16,8 +16,7 @@ X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget
 
 title1 justify=left 'Question: Does gender change the dropout rate?';
 
-title2 justify=left 'Rationale:  There may be hidden biases that instructor and the administration 
-needs to address with groups that have a higher dropout rate.';
+title2 justify=left 'Rationale:  There may be hidden biases that instructor and the administration needs to address with groups that have a higher dropout rate.';
 
 title3;
 
@@ -90,9 +89,7 @@ footnote;
 
 title1 justify=left 'Question: Which grade has the highest rate of dropouts?';
 
-title2 justify=left 'Rationale: By comparing the dropout rate, we can find see which grades are most 
-vulnerable to dropping out, and direct more experienced teachers, counseling and resources 
-to those grades.';
+title2 justify=left 'Rationale: By comparing the dropout rate, we can find see which grades are most vulnerable to dropping out, and direct more experienced teachers, counseling and resources to those grades.';
 title3;
 
 *
