@@ -56,8 +56,8 @@ previous year's data or a rolling average of previous years' data as a proxy.
 *sort by increase in FRPM Eligibility Rate, removing all schools with missing
 or invalid values for FRPM Eligibility Rates in AY2015 and AY2016;
 proc sort
-         data =cde_analytic_file
-	 out=cde_anlytic_file_by_FRPM_Incr
+        data =cde_analytic_file
+	out=cde_anlytic_file_by_FRPM_Incr
 	;
 	by
 	    descending FRPM_Percentage_point_Increase
@@ -72,12 +72,12 @@ run;
 * output first ten rows of resulting sorted data, addressing research question;
 proc report data=cde_anlytic_file_by_FRPM_Incr(obs=10);
     columns
-	    School
-	    District
-	    Percent_Eligible_FRPM_K12_1516
-	    Percent_Eligible_FRPM_K12_1617
-            FRPM_Percentage_point_Increase
-	;
+        School
+	District
+	Percent_Eligible_FRPM_K12_1516
+	Percent_Eligible_FRPM_K12_1617
+        FRPM_Percentage_point_Increase
+    ;
 
 run;
 
@@ -321,7 +321,7 @@ data or a rolling average of previous years' data as a proxy.
 * calculate the first 10 school that the drop rate is lowest;
    
 proc sql outobs=10;
-	select
+        select
 	     School
 	    ,District
 	    ,Number_of_ACT_Takers/* NumTstTakr from act17 */
@@ -339,7 +339,7 @@ proc sql outobs=10;
 	    and
 	    Number_of_Total_Remain >0
 	 order by
-		Rate_of_Dropout desc
+	    Rate_of_Dropout desc
                
 	;
 quit;
