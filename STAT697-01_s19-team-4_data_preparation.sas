@@ -314,7 +314,7 @@ quit;
 proc sql;
     create table drop17_ as
         select 
-             CDS_CODE,
+             CDS_CODE
             ,E7+E8+ ETOT as TE
             ,D7+D8+ DTOT  as TD
 	    from dropouts17;
