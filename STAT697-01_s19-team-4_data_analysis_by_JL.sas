@@ -71,10 +71,10 @@ run;
 proc report data=cde_anlytic_file_by_FRPM_Incr(obs=10);
     columns
 	    School
-		District
-		Percent_Eligible_FRPM_K12_1516
-		Percent_Eligible_FRPM_K12_1617
-        FRPM_Percentage_point_Increase
+	    District
+	    Percent_Eligible_FRPM_K12_1516
+	    Percent_Eligible_FRPM_K12_1617
+            FRPM_Percentage_point_Increase
 	;
 
 run;
