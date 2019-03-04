@@ -84,14 +84,9 @@ title;
 footnote;
 
 
-
-
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
-
-
-
 
 title1 justify= left
 'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What’s the top ten schools were the number of high dropout?'
@@ -164,7 +159,6 @@ run;
 * clear titles/footnotes;
 title;
 footnote;
-
 
 
 
@@ -241,7 +235,6 @@ run;
 * clear titles/footnotes;
 title;
 footnote;
-
 
 
 *******************************************************************************;
