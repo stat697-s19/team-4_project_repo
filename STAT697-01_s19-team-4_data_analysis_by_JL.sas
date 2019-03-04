@@ -34,25 +34,7 @@ footnote3 justify= left
 footnote4 justify= left
 'Based on above analysis, we had better to consider if we should include the Camp Glenwood school and Rising Sun school or consider them as outliers in our further study.'
 ;
-/*
-proc sql outobs=10;
-	select 
-		 School
-		,District
-		,Percent_Eligible_FRPM_K12_1516
-		,Percent_Eligible_FRPM_K12_1617
-		,FRPM_Percentage_Point_Increase
-	from
-		cde_analytic_file
-	where 
-	    Percent_Eligible_FRPM_K12_1516 >0
-		and
-		Percent_Eligible_FRPM_K12_1617 >0
-	order by
-		FRPM_Percentage_Point_Increase desc
-	;
-quit;
-*/
+
 proc sort
          data =cde_analytic_file
 		 out=cde_anlytic_file_by_FRPM_Incr
