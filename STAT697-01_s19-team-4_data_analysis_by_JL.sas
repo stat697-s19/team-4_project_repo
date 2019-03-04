@@ -55,11 +55,11 @@ previous year's data or a rolling average of previous years' data as a proxy.
 or invalid values for FRPM Eligibility Rates in AY2015 and AY2016;
 proc sort
          data =cde_analytic_file
-		 out=cde_anlytic_file_by_FRPM_Incr
+	 out=cde_anlytic_file_by_FRPM_Incr
 	;
 	by
-	     descending FRPM_Percentage_point_Increase
-		 School
+	    descending FRPM_Percentage_point_Increase
+	    School
 	;
 	where
 	    Percent_Eligible_FRPM_K12_1516 >0
@@ -198,17 +198,17 @@ existed, and if it is linear regression.
 ;
 
 proc corr
-		data = cde_analytic_file
-		nosimple
+    data = cde_analytic_file
+    nosimple
     ;
-	var
-	     Percent_Eligible_FRPM_K12_1617
-	     Rate_of_Dropout
+        var
+	    Percent_Eligible_FRPM_K12_1617
+	    Rate_of_Dropout
 	;
 	where 
-		not(missing(Percent_Eligible_FRPM_K12_1617))
-		and 
-		not(missing(Rate_of_Dropout))
+	    not(missing(Percent_Eligible_FRPM_K12_1617))
+	    and 
+	    not(missing(Rate_of_Dropout))
 
 ;
 run;
