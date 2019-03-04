@@ -56,7 +56,7 @@ previous year's data or a rolling average of previous years' data as a proxy.
 *sort by increase in FRPM Eligibility Rate, removing all schools with missing
 or invalid values for FRPM Eligibility Rates in AY2015 and AY2016;
 proc sort
-        data =cde_analytic_file
+    data =cde_analytic_file
 	out=cde_anlytic_file_by_FRPM_Incr
 	;
 	by
@@ -124,7 +124,7 @@ more than the existence of a linear relationship.
 ;
 
 proc corr
-        data = cde_analytic_file
+    data = cde_analytic_file
 	nosimple
     ;
 	var
@@ -204,10 +204,10 @@ existed, and if it is linear regression.
 
 
 proc corr
-        data = cde_analytic_file
-        nosimple
+    data = cde_analytic_file
+    nosimple
     ;
-        var
+    var
 	    Percent_Eligible_FRPM_K12_1617
 	    Rate_of_Dropout
 	;

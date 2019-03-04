@@ -200,12 +200,12 @@ proc sql;
             row_count_for_unique_id_value > 1
     ;
     /* remove rows with missing unique id components, or with unique ids that do
-	   not correspond to schools; after executing this query, the new dataset
-	   frpm1516 will have no duplicate/repeated unique id values,and all unique
-	   id values will correspond to our experimenal units of interest, which are
-	   California Public K-12 schools; this means the columns County_Code,
-	   District_Code, and School_Code in frpm1516 are guaranteed to form a
-	   composite key */
+       not correspond to schools; after executing this query, the new dataset
+       frpm1516 will have no duplicate/repeated unique id values,and all unique
+       id values will correspond to our experimenal units of interest, which are
+       California Public K-12 schools; this means the columns County_Code,
+       District_Code, and School_Code in frpm1516 are guaranteed to form a
+       composite key */
     create table frpm1516 as
         select
             *
@@ -244,21 +244,21 @@ proc sql;
             ,School_Code
         having
             row_count_for_unique_id_value > 1
-	;
+    ;
     create table frpm1617 as
-	    select
-		    *
-		from
-		    frpm1617_raw
-		where
-		    not(missing(County_Code))
-			and
-			not(missing(District_Code))
-			and
+        select
+            *
+        from
+            frpm1617_raw
+        where
+            not(missing(County_Code))
+            and
+            not(missing(District_Code))
+            and
             not(missing(School_Code))
-			and
-			School_Code not in ("0000000","0000001")
-	;
+            and
+            School_Code not in ("0000000","0000001")
+    ;
 quit;
 
 
@@ -270,37 +270,37 @@ proc sql;
        dropouts17_raw_bad_unique_ids only has non-school values of CDS_Code
        that need to be removed */
     create table dropouts17_raw_bad_uqique_ids as
-	    select
-		    A.*
-		from
-		    dropouts17_raw as A
-			left join
-			(
-			    select
-				    CDS_CODE
-					,count(*) as row_count_for_unique_id_value
-				from
-				    dropouts17_raw
-				group by
-				    CDS_CODE
-			)as B
-			on A.CDS_CODE= B.CDS_CODE
-		having
-		    row_count_for_unique_id_value >1
-			or
-			missing(CDS_CODE)
-			or
-			substr(CDS_CODE, 8,7) in ("0000000","0000001")
-		;
+        select
+            A.*
+        from
+            dropouts17_raw as A
+            left join
+            (
+                select
+                    CDS_CODE
+                    ,count(*) as row_count_for_unique_id_value
+                from
+                    dropouts17_raw
+                group by
+                    CDS_CODE
+            )as B
+            on A.CDS_CODE= B.CDS_CODE
+        having
+            row_count_for_unique_id_value >1
+            or
+            missing(CDS_CODE)
+            or
+            substr(CDS_CODE, 8,7) in ("0000000","0000001")
+        ;
     create table dropouts17 as
-	    select
-		    *
-		from
-		    dropouts17_raw
-		where
-		    substr(CDS_CODE,8, 7) not in ("0000000","0000001")
+        select
+            *
+        from
+            dropouts17_raw
+        where
+            substr(CDS_CODE,8, 7) not in ("0000000","0000001")
 
-	;
+    ;
 quit;
 
 
@@ -317,7 +317,7 @@ proc sql;
              CDS_CODE
             ,E7+E8+ ETOT as TE
             ,D7+D8+ DTOT  as TD
-	    from dropouts17;
+        from dropouts17;
 
 proc sql;
     create table drop17__ as
@@ -325,8 +325,8 @@ proc sql;
              CDS_CODE
             ,sum(TE) as TTE
             ,sum(TD)as TTD
-	    from drop17_
-	    group by CDS_CODE;
+        from drop17_
+        group by CDS_CODE;
 
 quit;
 
@@ -351,8 +351,8 @@ proc sql;
             ,sum(D11) as D11
             ,sum(D12) as D12
             ,sum(DTOT) as DTOT
-	    from dropouts17
-	    group by CDS_CODE, GENDER;
+        from dropouts17
+        group by CDS_CODE, GENDER;
 
 quit;
 * check act17_raw for bad unique id values, where the column cds is intended to
@@ -363,38 +363,38 @@ proc sql;
        act17_raw_bad_unique_ids only has non-school values of cds that need to
        be removed */
     create table act17_raw_bad_uqique_ids as
-	    select
-		    A.*
-		from
-		    act17_raw as A
-			left join
-			(
-			    select
-				    cds
-					,count(*) as row_count_for_unique_id_value
-				from
-				    act17_raw
-				group by
-				    cds
-			)as B
-			on A.cds= B.cds
-		having
-		    row_count_for_unique_id_value >1
-			or
-			missing(cds)
-			or
-			substr(cds, 8,7) in ("0000000","0000001")
-		;
+        select
+            A.*
+        from
+            act17_raw as A
+            left join
+            (
+                select
+                    cds
+                    ,count(*) as row_count_for_unique_id_value
+                from
+                    act17_raw
+                group by
+                    cds
+            )as B
+            on A.cds= B.cds
+        having
+            row_count_for_unique_id_value >1
+            or
+            missing(cds)
+            or
+            substr(cds, 8,7) in ("0000000","0000001")
+        ;
     create table act17 as
-	    select
-		    *
-		from
-		    act17_raw
-		where
-		    /* ne means not equal to */
-		    substr(cds,8, 7) ne "0000000"
+        select
+            *
+        from
+            act17_raw
+        where
+            /* ne means not equal to */
+            substr(cds,8, 7) ne "0000000"
 
-	;
+    ;
 quit;
 
 *converting column from character to numeric;
@@ -418,8 +418,8 @@ proc sql;
              label "Number of ACT Takers in 2017"
             ,D.Percent_with_ACT_above_21 format best12.
              label "Percentage of ACT takers scoring 21+ 2017"
-			,D.School
-			,C.GENDER
+            ,D.School
+            ,C.GENDER
             ,C.E7
             ,C.E8
             ,C.E9
@@ -497,8 +497,8 @@ proc sql;
                      AS Number_took_ACT
                     ,PctGE
                      AS Percent_with_ACT_above_21
-					,sname 
-					 AS School
+                    ,sname 
+                     AS School
                 from
                     act17
             ) as D
@@ -533,12 +533,12 @@ proc sql;
              label "FRPM Eligibility Rate Percentage Point Increase"
             ,C.Number_of_Total_Enrollment format comma12.
              label "Number_of_Total_Enrollment in AY2016-17"
-			,C.Number_of_Total_Dropout format comma12.
+            ,C.Number_of_Total_Dropout format comma12.
              label "Number_of_Total_Dropout in AY2016-17"
-			,C.Number_of_Total_Enrollment - C.Number_of_Total_Dropout
+            ,C.Number_of_Total_Enrollment - C.Number_of_Total_Dropout
              AS Number_of_Total_Remain format comma12.
              label "Number_of_Total_Remain from grade seven to grade twelve"
-			,C.Number_of_Total_Dropout / C.Number_of_Total_Enrollment
+            ,C.Number_of_Total_Dropout / C.Number_of_Total_Enrollment
              AS Rate_of_Dropout format percent12.2
              label "Rate_of_Dropout from grade seven to grade twelve"
             ,calculated Number_of_Total_Remain
