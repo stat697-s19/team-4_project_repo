@@ -56,7 +56,7 @@ previous year's data or a rolling average of previous years' data as a proxy.
 *sort by increase in FRPM Eligibility Rate, removing all schools with missing
 or invalid values for FRPM Eligibility Rates in AY2015 and AY2016;
 proc sort
-        data =cde_analytic_file
+    data =cde_analytic_file
 	out=cde_anlytic_file_by_FRPM_Incr
 	;
 	by
@@ -92,7 +92,7 @@ footnote;
 *******************************************************************************;
 
 title1 justify= left
-'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? Whatâ€™s the top ten schools were the number of high dropout?'
+'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What is the top ten schools were the number of high dropout?'
 ;
 title2 justify= left
 'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools are most in need of more help with the FRPM.'
@@ -124,7 +124,7 @@ more than the existence of a linear relationship.
 ;
 
 proc corr
-        data = cde_analytic_file
+    data = cde_analytic_file
 	nosimple
     ;
 	var
@@ -204,10 +204,10 @@ existed, and if it is linear regression.
 
 
 proc corr
-        data = cde_analytic_file
-        nosimple
+    data = cde_analytic_file
+    nosimple
     ;
-        var
+    var
 	    Percent_Eligible_FRPM_K12_1617
 	    Rate_of_Dropout
 	;
@@ -224,11 +224,11 @@ footnote;
 
 
 title1
-'Plot illustrating the negative correlation between Percent_Eligible_FRPM_K12_1617 and Rate_of_Dropout'
+'Plot illustrating the positive correlation between Percent_Eligible_FRPM_K12_1617 and Rate_of_Dropout'
 ;
 
 footnote1
-"In the above plot, we can see there is not very strong increase Rate_of_Dropout as Percent_Eligible_FRPM_K12_1617 increase as above plot."
+"In the above plot, we can see there is not very strong increase Rate_of_Dropout as Percent_Eligible_FRPM_K12_1617 increase as above plot, maybe because of the correlation is 0.17"
 ;
 
 proc sgplot data=cde_analytic_file;
