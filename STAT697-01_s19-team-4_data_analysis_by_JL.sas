@@ -107,12 +107,12 @@ footnote3 justify= left
 
 
 proc corr
-		data = cde_analytic_file
-		nosimple
-      ;
-	  var
-	     Percent_Eligible_FRPM_K12_1617
-		 Percent_with_ACT_above_21
+	    data = cde_analytic_file
+	    nosimple
+    ;
+	var
+	    Percent_Eligible_FRPM_K12_1617
+		Percent_with_ACT_above_21
 	;
 	where 
 		not(missing(Percent_Eligible_FRPM_K12_1617))
@@ -177,8 +177,8 @@ from this analysis, since they are potentially missing data values.
 proc corr
 		data = cde_analytic_file
 		nosimple
-      ;
-	  var
+    ;
+	var
 	     Percent_Eligible_FRPM_K12_1617
 		 Rate_of_Dropout
 	;
