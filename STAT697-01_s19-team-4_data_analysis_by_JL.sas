@@ -121,8 +121,8 @@ more than the existence of a linear relationship.
 ;
 
 proc corr
-	    data = cde_analytic_file
-	    nosimple
+        data = cde_analytic_file
+	nosimple
     ;
 	var
 	    Percent_Eligible_FRPM_K12_1617
@@ -198,8 +198,8 @@ existed, and if it is linear regression.
 ;
 
 proc corr
-    data = cde_analytic_file
-    nosimple
+        data = cde_analytic_file
+        nosimple
     ;
         var
 	    Percent_Eligible_FRPM_K12_1617
