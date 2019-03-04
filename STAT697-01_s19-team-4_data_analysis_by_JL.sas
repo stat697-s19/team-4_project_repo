@@ -35,6 +35,7 @@ footnote4 justify= left
 'Based on above analysis, we had better to consider if we should include the Camp Glenwood school and Rising Sun school or consider them as outliers in our further study.'
 ;
 
+
 *
 Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1516 
 to the column of the same name from frpm1617.
@@ -50,6 +51,7 @@ Followup Steps: More carefully clean values in order to filter out any possible
 illegal values, and better handle missing data and outliers, e.g., by using a 
 previous year's data or a rolling average of previous years' data as a proxy.
 ;
+
 
 *sort by increase in FRPM Eligibility Rate, removing all schools with missing
 or invalid values for FRPM Eligibility Rates in AY2015 and AY2016;
@@ -84,12 +86,13 @@ title;
 footnote;
 
 
+
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 
 title1 justify= left
-'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What’s the top ten schools were the number of high dropout?'
+'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? Whatâ€™s the top ten schools were the number of high dropout?'
 ;
 title2 justify= left
 'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools are most in need of more help with the FRPM.'
@@ -141,6 +144,7 @@ title;
 footnote;
 
 
+
 title1
 'Plot illustrating the negative correlation between Percent_Eligible_FRPM_K12_1617 and Percent_with_ACT_above_21'
 ;
@@ -181,6 +185,7 @@ footnote3 justify= left
 'Above two researcher questions show that the economy factor would play a crucial role in study performance of students and even in dropout possible.'
 ;
 
+
 *
 Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE 
 from drop17.
@@ -196,6 +201,7 @@ not so strong as the we expected. A possible follow-up to this approach could us
 a detailed technique such as R square to check if the relationship is actually 
 existed, and if it is linear regression.
 ;
+
 
 proc corr
         data = cde_analytic_file
@@ -231,6 +237,42 @@ proc sgplot data=cde_analytic_file;
         y=Rate_of_Dropout
     ;
 run;
+* clear titles/footnotes;
+title;
+footnote;
+
+proc sgplot data=cde_analytic_file;
+    scatter
+        x=Percent_Eligible_FRPM_K12_1617
+        y=Rate_of_Dropout
+    ;
+run;
+
+
+
+*
+Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number 
+of students dropout? What’s the top ten schools were the number of high dropout?
+
+Rationale: This would help identify whether child-poverty levels are associated 
+with the number of high dropout students, if so, providing a strong indicator 
+for the types of schools most in need of more help with the FRPM.
+
+Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE 
+from drop17.
+
+Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
+from this analysis, since they are potentially missing data values.
+
+Methodology: Use proc corr to perform a correlation analysis, and then use proc
+sgplot to output a scatterplot, illustrating the correlation present.
+
+Followup Steps: Unlike above relationship, from the plot we find the relationship is 
+not so strong as the we expected. A possible follow-up to this approach could use is
+a detailed technique such as R square to check if the relationship is actually 
+existed, and if it is linear regression.
+;
+
 
 * clear titles/footnotes;
 title;
@@ -254,7 +296,7 @@ footnote2 justify= left
 ;
 
 *
-Question: What’s the top ten schools were the number of high dropout? and 
+Question: Whatâ€™s the top ten schools were the number of high dropout? and 
 the corresponding number of ACT takers'?
 
 Rationale: This would help identify whether ACT are associated with the number 
@@ -306,6 +348,8 @@ quit;
 title;
 footnote;
 	
+
+
 
 
 
