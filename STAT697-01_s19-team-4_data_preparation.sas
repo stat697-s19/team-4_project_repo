@@ -302,6 +302,8 @@ proc sql;
 
 	;
 quit;
+
+
 * because the numer of the total enrollment and dropout is not including the
   grade seven and grade eight, also the total number of the enrollment and
   dropout is saprate by ehic and gender, we should edit the dropouts17 first;
@@ -311,26 +313,46 @@ quit;
   name the new work drop17;
 proc sql;
     create table drop17_ as
-    select CDS_CODE,
-           E7+E8+ ETOT as TE,
-           D7+D8+ DTOT  as TD
-	from dropouts17;
+        select 
+             CDS_CODE,
+            ,E7+E8+ ETOT as TE
+            ,D7+D8+ DTOT  as TD
+	    from dropouts17;
 
 proc sql;
     create table drop17__ as
-    select CDS_CODE, sum(TE) as TTE, sum(TD)as TTD
-	from drop17_
-	group by CDS_CODE;
+        select 
+             CDS_CODE
+            ,sum(TE) as TTE
+            ,sum(TD)as TTD
+	    from drop17_
+	    group by CDS_CODE;
 
 quit;
 
+
+
 proc sql;
     create table __drop17 as
-    select CDS_CODE, GENDER, sum(E7) as E7, sum(E8) as E8, sum(E9) as E9, sum(E10) as E10, 
-		sum(E11) as E11, sum(E12) as E12, sum(ETOT) as ETOT, sum(D7) as D7, sum(D8) as D8, 
-		sum(D9) as D9, sum(D10) as D10, sum(D11) as D11, sum(D12) as D12, sum(DTOT) as DTOT
-	from dropouts17
-	group by CDS_CODE, GENDER;
+        select 
+             CDS_CODE
+            ,GENDER
+            ,sum(E7) as E7
+            ,sum(E8) as E8
+            ,sum(E9) as E9
+            ,sum(E10) as E10
+            ,sum(E11) as E11
+            ,sum(E12) as E12
+            ,sum(ETOT) as ETOT
+            ,sum(D7) as D7
+            ,sum(D8) as D8
+            ,sum(D9) as D9
+            ,sum(D10) as D10
+            ,sum(D11) as D11
+            ,sum(D12) as D12
+            ,sum(DTOT) as DTOT
+	    from dropouts17
+	    group by CDS_CODE, GENDER;
 
 quit;
 * check act17_raw for bad unique id values, where the column cds is intended to
@@ -397,8 +419,21 @@ proc sql;
             ,D.Percent_with_ACT_above_21 format best12.
              label "Percentage of ACT takers scoring 21+ 2017"
 			,D.School
-			,C.GENDER, C.E7, C.E8, C.E9, C.E10, C.E11, C.E12,
-			C.ETOT, C.D7, C.D8, C.D9, C.D10, C.D11, C.D12, C.DTOT
+			,C.GENDER
+            ,C.E7
+            ,C.E8
+            ,C.E9
+            ,C.E10
+            ,C.E11
+            ,C.E12
+            ,C.ETOT
+            ,C.D7
+            ,C.D8
+            ,C.D9
+            ,C.D10 
+            ,C.D11
+            ,C.D12
+            ,C.DTOT
 
         from
 
@@ -430,8 +465,22 @@ proc sql;
             full join
             (
                 select
-                    CDS_CODE, GENDER, E7, E8, E9, E10,
-					E11, E12, ETOT, D7, D8, D9, D10, D11, D12, DTOT
+                    CDS_CODE
+                   ,GENDER
+                   ,E7
+                   ,E8
+                   ,E9
+                   ,E10
+                   ,E11
+                   ,E12
+                   ,ETOT
+                   ,D7
+                   ,D8
+                   ,D9
+                   ,D10
+                   ,D11
+                   ,D12
+                   ,DTOT
                 from
                     __drop17
             ) as C
