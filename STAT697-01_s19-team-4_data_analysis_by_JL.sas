@@ -35,6 +35,24 @@ footnote4 justify= left
 'Based on above analysis, we had better to consider if we should include the Camp Glenwood school and Rising Sun school or consider them as outliers in our further study.'
 ;
 
+*
+Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1516 
+to the column of the same name from frpm1617.
+
+Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
+be excluded from this analysis, since they are potentially missing data values
+
+Methodology: Use proc sort to create a temporary sorted table in descending
+order by FRPM_Percentage_Point_Increase, with ties broken by school name. Then
+use proc report to print the first ten rows of the sorted dataset.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data and outliers, e.g., by using a 
+previous year's data or a rolling average of previous years' data as a proxy.
+;
+
+*sort by increase in FRPM Eligibility Rate, removing all schools with missing
+or invalid values for FRPM Eligibility Rates in AY2015 and AY2016;
 proc sort
          data =cde_analytic_file
 		 out=cde_anlytic_file_by_FRPM_Incr
@@ -49,7 +67,7 @@ proc sort
 		Percent_Eligible_FRPM_K12_1617 >0
 	;
 run;
-
+* output first ten rows of resulting sorted data, addressing research question;
 proc report data=cde_anlytic_file_by_FRPM_Incr(obs=10);
     columns
 	    School
@@ -74,27 +92,6 @@ footnote1
 ;
 
 
-*
-Question: What are the top ten districts that experienced the biggest increase 
-and decrease in "Percent (%) Eligible Free (K-12)" between AY2015-16 and AY2016-17? 
-
-Rationale: This should help identify school districts to consider for new 
-outreach based upon increasing and decreasing child-poverty levels.
-
-Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1516 
-to the column of the same name from frpm1617.
-
-Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
-be excluded from this analysis, since they are potentially missing data values
-
-Methodology: Use proc sort to create a temporary sorted table in descending
-order by FRPM_Percentage_Point_Increase, with ties broken by school name. Then
-use proc report to print the first ten rows of the sorted dataset.
-
-Followup Steps: More carefully clean values in order to filter out any possible
-illegal values, and better handle missing data and outliers, e.g., by using a 
-previous year's data or a rolling average of previous years' data as a proxy.
-;
 
 
 *******************************************************************************;
