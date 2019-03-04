@@ -64,7 +64,7 @@ proc sort
 	where
 	    Percent_Eligible_FRPM_K12_1516 >0
 		and
-		Percent_Eligible_FRPM_K12_1617 >0
+	    Percent_Eligible_FRPM_K12_1617 >0
 	;
 run;
 * output first ten rows of resulting sorted data, addressing research question;
@@ -89,7 +89,7 @@ footnote;
 *******************************************************************************;
 
 title1 justify= left
-'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What’s the top ten schools were the number of high dropout?'
+'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? Whatâ€™s the top ten schools were the number of high dropout?'
 ;
 title2 justify= left
 'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools are most in need of more help with the FRPM.'
@@ -126,7 +126,7 @@ proc corr
     ;
 	var
 	    Percent_Eligible_FRPM_K12_1617
-		Percent_with_ACT_above_21
+	    Percent_with_ACT_above_21
 	;
 	where 
 		not(missing(Percent_Eligible_FRPM_K12_1617))
@@ -203,7 +203,7 @@ proc corr
     ;
 	var
 	     Percent_Eligible_FRPM_K12_1617
-		 Rate_of_Dropout
+	     Rate_of_Dropout
 	;
 	where 
 		not(missing(Percent_Eligible_FRPM_K12_1617))
@@ -254,7 +254,7 @@ footnote2 justify= left
 ;
 
 *
-Question: What’s the top ten schools were the number of high dropout? and 
+Question: Whatâ€™s the top ten schools were the number of high dropout? and 
 the corresponding number of ACT takers'?
 
 Rationale: This would help identify whether ACT are associated with the number 
