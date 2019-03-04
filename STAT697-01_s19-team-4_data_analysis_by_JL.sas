@@ -339,7 +339,7 @@ proc sql outobs=10;
 	    and
 	    Number_of_Total_Remain >0
 	 order by
-		Rate_of_Dropout desc
+	    Rate_of_Dropout desc
                
 	;
 quit;
