@@ -92,7 +92,7 @@ footnote;
 *******************************************************************************;
 
 title1 justify= left
-'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? Whatâ€™s the top ten schools were the number of high dropout?'
+'Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number of students dropout? What is the top ten schools were the number of high dropout?'
 ;
 title2 justify= left
 'Rationale: This would help identify whether child-poverty levels are associated with the number of high dropout students, if so, providing a strong indicator for the types of schools are most in need of more help with the FRPM.'
