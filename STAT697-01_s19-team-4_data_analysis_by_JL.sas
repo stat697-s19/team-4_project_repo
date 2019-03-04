@@ -37,7 +37,7 @@ footnote4 justify= left
 
 
 *
-Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1516 
+Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1516
 to the column of the same name from frpm1617.
 
 Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
@@ -48,7 +48,7 @@ order by FRPM_Percentage_Point_Increase, with ties broken by school name. Then
 use proc report to print the first ten rows of the sorted dataset.
 
 Followup Steps: More carefully clean values in order to filter out any possible
-illegal values, and better handle missing data and outliers, e.g., by using a 
+illegal values, and better handle missing data and outliers, e.g., by using a
 previous year's data or a rolling average of previous years' data as a proxy.
 ;
 
@@ -78,7 +78,6 @@ proc report data=cde_anlytic_file_by_FRPM_Incr(obs=10);
     Percent_Eligible_FRPM_K12_1617
         FRPM_Percentage_point_Increase
     ;
-
 run;
 
 * clear titles/footnotes;
@@ -108,7 +107,7 @@ footnote3 justify= left
 ;
 
 *
-Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1617 
+Note: This compares the column "Percent (%) Eligible Free (K-12)" from frpm1617
 to the column PCTGE21 from act17.
 
 Limitations: Values of "Percent (%) Eligible Free (K-12)" equal to zero should
@@ -131,12 +130,11 @@ proc corr
         Percent_Eligible_FRPM_K12_1617
         Percent_with_ACT_above_21
     ;
-    where 
+    where
         not(missing(Percent_Eligible_FRPM_K12_1617))
-        and 
+        and
         not(missing(Percent_with_ACT_above_21))
-
-;
+    ;
 run;
 
 * clear titles/footnotes;
@@ -187,7 +185,7 @@ footnote3 justify= left
 
 
 *
-Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE 
+Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE
 from drop17.
 
 Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
@@ -196,9 +194,9 @@ from this analysis, since they are potentially missing data values.
 Methodology: Use proc corr to perform a correlation analysis, and then use proc
 sgplot to output a scatterplot, illustrating the correlation present.
 
-Followup Steps: Unlike above relationship, from the plot we find the relationship is 
+Followup Steps: Unlike above relationship, from the plot we find the relationship is
 not so strong as the we expected. A possible follow-up to this approach could use is
-a detailed technique such as R square to check if the relationship is actually 
+a detailed technique such as R square to check if the relationship is actually
 existed, and if it is linear regression.
 ;
 
@@ -211,11 +209,10 @@ proc corr
         Percent_Eligible_FRPM_K12_1617
         Rate_of_Dropout
     ;
-    where 
+    where
         not(missing(Percent_Eligible_FRPM_K12_1617))
-        and 
+        and
         not(missing(Rate_of_Dropout))
-
 ;
 run;
 * clear titles/footnotes;
@@ -251,14 +248,14 @@ run;
 
 
 *
-Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number 
+Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number
 of students dropout? What’s the top ten schools were the number of high dropout?
 
-Rationale: This would help identify whether child-poverty levels are associated 
-with the number of high dropout students, if so, providing a strong indicator 
+Rationale: This would help identify whether child-poverty levels are associated
+with the number of high dropout students, if so, providing a strong indicator
 for the types of schools most in need of more help with the FRPM.
 
-Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE 
+Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE
 from drop17.
 
 Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
@@ -267,9 +264,9 @@ from this analysis, since they are potentially missing data values.
 Methodology: Use proc corr to perform a correlation analysis, and then use proc
 sgplot to output a scatterplot, illustrating the correlation present.
 
-Followup Steps: Unlike above relationship, from the plot we find the relationship is 
+Followup Steps: Unlike above relationship, from the plot we find the relationship is
 not so strong as the we expected. A possible follow-up to this approach could use is
-a detailed technique such as R square to check if the relationship is actually 
+a detailed technique such as R square to check if the relationship is actually
 existed, and if it is linear regression.
 ;
 
@@ -296,14 +293,14 @@ footnote2 justify= left
 ;
 
 *
-Question: Whatâ€™s the top ten schools were the number of high dropout? and 
+Question: Whatâ€™s the top ten schools were the number of high dropout? and
 the corresponding number of ACT takers'?
 
-Rationale: This would help identify whether ACT are associated with the number 
-of high dropout students, if so, providing a strong conformation for the 
+Rationale: This would help identify whether ACT are associated with the number
+of high dropout students, if so, providing a strong conformation for the
 negative relationship between the number of ACT taker and dropput students.
 
-Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE 
+Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE
 from drop17.
 
 Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
@@ -319,7 +316,7 @@ data or a rolling average of previous years' data as a proxy.
 ;
 
 * calculate the first 10 school that the drop rate is lowest;
-   
+
 proc sql outobs=10;
         select
          School
@@ -340,18 +337,9 @@ proc sql outobs=10;
         Number_of_Total_Remain >0
      order by
         Rate_of_Dropout desc
-               
     ;
 quit;
 
 * clear titles/footnotes;
 title;
 footnote;
-    
-
-
-
-
-
-
-
