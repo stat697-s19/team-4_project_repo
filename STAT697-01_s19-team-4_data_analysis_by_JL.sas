@@ -57,25 +57,25 @@ previous year's data or a rolling average of previous years' data as a proxy.
 or invalid values for FRPM Eligibility Rates in AY2015 and AY2016;
 proc sort
     data =cde_analytic_file
-	out=cde_anlytic_file_by_FRPM_Incr
-	;
-	by
-	    descending FRPM_Percentage_point_Increase
-	    School
-	;
-	where
-	    Percent_Eligible_FRPM_K12_1516 >0
-		and
-	    Percent_Eligible_FRPM_K12_1617 >0
-	;
+    out=cde_anlytic_file_by_FRPM_Incr
+    ;
+    by
+        descending FRPM_Percentage_point_Increase
+        School
+    ;
+    where
+        Percent_Eligible_FRPM_K12_1516 >0
+        and
+        Percent_Eligible_FRPM_K12_1617 >0
+    ;
 run;
 * output first ten rows of resulting sorted data, addressing research question;
 proc report data=cde_anlytic_file_by_FRPM_Incr(obs=10);
     columns
         School
-	District
-	Percent_Eligible_FRPM_K12_1516
-	Percent_Eligible_FRPM_K12_1617
+    District
+    Percent_Eligible_FRPM_K12_1516
+    Percent_Eligible_FRPM_K12_1617
         FRPM_Percentage_point_Increase
     ;
 
@@ -125,16 +125,16 @@ more than the existence of a linear relationship.
 
 proc corr
     data = cde_analytic_file
-	nosimple
+    nosimple
     ;
-	var
-	    Percent_Eligible_FRPM_K12_1617
-	    Percent_with_ACT_above_21
-	;
-	where 
-		not(missing(Percent_Eligible_FRPM_K12_1617))
-		and 
-		not(missing(Percent_with_ACT_above_21))
+    var
+        Percent_Eligible_FRPM_K12_1617
+        Percent_with_ACT_above_21
+    ;
+    where 
+        not(missing(Percent_Eligible_FRPM_K12_1617))
+        and 
+        not(missing(Percent_with_ACT_above_21))
 
 ;
 run;
@@ -208,13 +208,13 @@ proc corr
     nosimple
     ;
     var
-	    Percent_Eligible_FRPM_K12_1617
-	    Rate_of_Dropout
-	;
-	where 
-	    not(missing(Percent_Eligible_FRPM_K12_1617))
-	    and 
-	    not(missing(Rate_of_Dropout))
+        Percent_Eligible_FRPM_K12_1617
+        Rate_of_Dropout
+    ;
+    where 
+        not(missing(Percent_Eligible_FRPM_K12_1617))
+        and 
+        not(missing(Rate_of_Dropout))
 
 ;
 run;
@@ -322,32 +322,32 @@ data or a rolling average of previous years' data as a proxy.
    
 proc sql outobs=10;
         select
-	     School
-	    ,District
-	    ,Number_of_ACT_Takers/* NumTstTakr from act17 */
-	    ,Number_of_Total_Dropout /* TTD from drop17 */
-		,Number_of_Total_Enrollment/* TTE from drop17*/
-	    ,Number_of_Total_Remain
-	    ,Rate_of_Remain
-		,Rate_of_Dropout
-	from
-	    cde_analytic_file
-	where
-	    Number_of_Total_Enrollment > 0
-	    and
-	    Number_of_Total_Dropout > 0
-	    and
-	    Number_of_Total_Remain >0
-	 order by
-	    Rate_of_Dropout desc
+         School
+        ,District
+        ,Number_of_ACT_Takers/* NumTstTakr from act17 */
+        ,Number_of_Total_Dropout /* TTD from drop17 */
+        ,Number_of_Total_Enrollment/* TTE from drop17*/
+        ,Number_of_Total_Remain
+        ,Rate_of_Remain
+        ,Rate_of_Dropout
+    from
+        cde_analytic_file
+    where
+        Number_of_Total_Enrollment > 0
+        and
+        Number_of_Total_Dropout > 0
+        and
+        Number_of_Total_Remain >0
+     order by
+        Rate_of_Dropout desc
                
-	;
+    ;
 quit;
 
 * clear titles/footnotes;
 title;
 footnote;
-	
+    
 
 
 
