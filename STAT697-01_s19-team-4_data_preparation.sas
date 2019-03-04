@@ -324,8 +324,15 @@ proc sql;
 
 quit;
 
+proc sql;
+    create table __drop17 as
+    select CDS_CODE, GENDER, sum(E7) as E7, sum(E8) as E8, sum(E9) as E9, sum(E10) as E10, 
+		sum(E11) as E11, sum(E12) as E12, sum(ETOT) as ETOT, sum(D7) as D7, sum(D8) as D8, 
+		sum(D9) as D9, sum(D10) as D10, sum(D11) as D11, sum(D12) as D12, sum(DTOT) as DTOT
+	from dropouts17
+	group by CDS_CODE, GENDER;
 
-
+quit;
 * check act17_raw for bad unique id values, where the column cds is intended to
   be a primary key;
 proc sql;
@@ -368,7 +375,10 @@ proc sql;
 	;
 quit;
 
-
+*converting column from character to numeric;
+data act17; set act17;
+PctGE= input(PctGE21, ? comma24.);
+run;
 
 *creating analytical dataset named "analytical_merged";
 proc sql;
@@ -386,7 +396,8 @@ proc sql;
              label "Number of ACT Takers in 2017"
             ,D.Percent_with_ACT_above_21 format best12.
              label "Percentage of ACT takers scoring 21+ 2017"
-			,C.ETHNIC, C.GENDER, C.E7, C.E8, C.E9, C.E10, C.E11, C.E12,
+			,D.School
+			,C.GENDER, C.E7, C.E8, C.E9, C.E10, C.E11, C.E12,
 			C.ETOT, C.D7, C.D8, C.D9, C.D10, C.D11, C.D12, C.DTOT
 
         from
@@ -419,10 +430,10 @@ proc sql;
             full join
             (
                 select
-                    CDS_CODE, ETHNIC, GENDER, E7, E8, E9, E10,
+                    CDS_CODE, GENDER, E7, E8, E9, E10,
 					E11, E12, ETOT, D7, D8, D9, D10, D11, D12, DTOT
                 from
-                    Dropouts17
+                    __drop17
             ) as C
             on A.CDS_Code = C.CDS_Code
             full join
@@ -437,6 +448,8 @@ proc sql;
                      AS Number_took_ACT
                     ,PctGE
                      AS Percent_with_ACT_above_21
+					,sname 
+					 AS School
                 from
                     act17
             ) as D
