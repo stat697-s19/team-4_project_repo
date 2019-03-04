@@ -218,11 +218,11 @@ footnote;
 
 
 title1
-'Plot illustrating the negative correlation between Percent_Eligible_FRPM_K12_1617 and Rate_of_Dropout'
+'Plot illustrating the positive correlation between Percent_Eligible_FRPM_K12_1617 and Rate_of_Dropout'
 ;
 
 footnote1
-"In the above plot, we can see there is not very strong increase Rate_of_Dropout as Percent_Eligible_FRPM_K12_1617 increase as above plot."
+"In the above plot, we can see there is not very strong increase Rate_of_Dropout as Percent_Eligible_FRPM_K12_1617 increase as above plot, maybe because of the correlation is 0.17"
 ;
 
 proc sgplot data=cde_analytic_file;
