@@ -51,7 +51,7 @@ proc sql;
 		analytical_merged
 	where 
 		gender = 'F'
-	;run;
+	;
 title;
 footnote;
 
@@ -65,7 +65,7 @@ proc sql;
 		analytical_merged
 	where 
 		gender = 'M'
-	;run;
+	;
 
 title 'Top Schools for Female Dropout';
 footnote 'These are the top 3 schools (in order) contributing most to female dropout';
@@ -75,10 +75,11 @@ proc sql outobs = 3;
 	from 
 		analytical_merged
 	where 
-		gender = 'F' and droprate <1
+		gender = 'F' 
+		and droprate <1
 	order by 
 		droprate desc
-	;run;
+	;
 title;
 footnote;
 
@@ -128,7 +129,7 @@ create table grade_levels as
 		avg(drop12) as Twelfth
 	from 
 		analytical_merged
-	;run;
+	;
 
 proc transpose 
 	data = grade_levels
@@ -139,7 +140,9 @@ title4 'Mean Dropout by Grade';
 footnote 'Dropout rate is highest at later years of students education.';
 proc sgplot 
     data = grade_levels;
-    scatter x=_name_ y=Col1;
+    scatter 
+		x=_name_ 
+		y=Col1;
 run;
 footnote;
 title;
@@ -180,7 +183,7 @@ proc sql;
     from
         analytical_merged
 	where 
-		droprate =0
+		droprate = 0
     ;
 quit;
 title;
@@ -206,9 +209,10 @@ who have an ACT score above 21 at each school.
 */
 
 footnote 'The regression results in a negative coefficient, which is significant. This confirms the stratification of Yes vs No dropouts result: higher rates of ACT scores greater than 21 will result in fewer dropouts. However, this model should not be used for prediction because the r-squared value is very low, meaning that most of the variance is not explained by this model. It also would assume that the data is distributed normally';
-proc reg data = analytical_merged;
-      model droprate = Percent_with_ACT_above_21;
-   run;
+proc reg 
+    data = analytical_merged;
+    model droprate = Percent_with_ACT_above_21;
+run;
 footnote;
 title;
 
@@ -219,7 +223,8 @@ proc sql;
     from
         analytical_merged
 	where 
-		droprate is not missing and Percent_with_ACT_above_21 is missing
+		droprate is not missing 
+		and Percent_with_ACT_above_21 is missing
 ;
 quit;
 
@@ -231,6 +236,7 @@ proc sql;
     from
         analytical_merged
 	where 
-		droprate is not missing and Percent_with_ACT_above_21 is not missing
+		droprate is not missing 
+		and Percent_with_ACT_above_21 is not missing
     ;
 quit;
