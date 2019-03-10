@@ -197,7 +197,6 @@ proc sql;
 	where 
 		droprate = 0
     ;
-quit;
 title;
 
 title 'Average for Schools Having Dropouts';
@@ -211,7 +210,6 @@ proc sql;
 	where 
 		droprate > 0.00001
     ;
-quit;
 footnote;
 title;
 
@@ -237,7 +235,6 @@ proc sql;
 		droprate is not missing 
 		and Percent_with_ACT_above_21 is missing
 ;
-quit;
 
 title'Mean Dropout - Schools Reporting ACT';
 footnote'There are many schools that have not reported PctGE - the column that has the percent of students getting a score above 21 on the ACT. These queries show that the dropout rates are 0.133 for schools that do not report pctGE and 0.010 for schools that do.';
