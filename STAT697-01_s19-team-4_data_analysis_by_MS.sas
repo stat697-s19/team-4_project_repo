@@ -30,6 +30,13 @@ values. Therefore, inferences on these small samples should be carefully
 applied. These are from school averages. In order to get the averages from
 the total student population, the totals need to be summed up before rate is
 calculated
+
+Methodology: Use proc report to show the average and standard deviation of the 
+dropout rate by gender and then list the three schools with the highest dropout
+rate using proc sql with outobs = 3.
+
+Followup Steps: Compare the top schools from subsequent and following years to 
+determine if performance is changing or if interventions are effective/needed.
 ;
 
 data analytical_merged;
@@ -37,46 +44,40 @@ data analytical_merged;
     droprate = DTOT / ETOT;
 run;
 
-/*
-This code finds the averages of male and female dropout rates per school. The 
-standard deviation is also taken to check for differents in variance.
-*/
-
-title4 'Female Average Dropout Rate by School'; footnote '';
-proc sql;
-	select 
-		avg(droprate) as Average,	
-		std(droprate) as SD
-	from 
-		analytical_merged
-	where 
-		gender = 'F'
-	;
+title4 'Dropout Rate by Gender'; footnote '';
+proc report 
+    data=analytical_merged
+    (keep=droprate gender);
+    column droprate gender;
+    define gender / group width=13
+          'Gender';
+    define droprate / mean format=best8.7
+          'Average Dropout Rate' width=11;
+run;
 title;
 footnote;
 
-title 'Male Average Dropout Rate by School';
-footnote 'Males have a slightly higher dropout rate on average, but females have a much higher variance between schools.';
-proc sql;
-	select 
-		avg(droprate) as Average,	
-		std(droprate) as SD
-	from 
-		analytical_merged
-	where 
-		gender = 'M'
-	;
+title 'Standard Deviation by Gender';
+footnote 'Males have a higher dropout rate on average, and variances between schools are similar.';
+proc report 
+    data=analytical_merged
+    (keep=droprate gender);
+    column droprate gender;
+    define gender / group width=10
+          'Gender';
+    define droprate / analysis std format=best8.7
+          'Standard Deviation' width =11;
+run;
 
-title 'Top Schools for Female Dropout';
-footnote 'These are the top 3 schools (in order) contributing most to female dropout';
+title 'Top Schools for Overall Dropout';
+footnote 'These are the top 3 schools (in order) having the highest dropout rate';
 proc sql outobs = 3;
 	select
-		School
+		School label 'Schools With Highest Dropout'
 	from 
 		analytical_merged
 	where 
-		gender = 'F' 
-		and droprate <1
+		droprate <1
 	order by 
 		droprate desc
 	;
@@ -101,12 +102,14 @@ dropouts17_raw dataset.
 Limitations: If any values of enrollment are zero where dropout is not zero, 
 there will be an error in calculating dropout rate, so all rows that have 
 greater dropout than enrollment would need to be deleted.
-;
 
-/*
-The code creates dropout rates for different grade levels in a new table by 
-making calculated columns. The data is then tranposed in order to be graphed.
-*/
+Methodology: Use proc sql and proc transpose to create a dataset that contains
+the dropout rate and grade of students. This format is needed in order to use
+proc sgplot, which compares the dropout rate of different schools.
+
+Followup Steps: Replace the data step with calculated proc sql steps in order
+to call the data more efficiently and free up memory.
+;
 
 data analytical_merged;
    set analytical_merged;
@@ -143,6 +146,8 @@ proc sgplot
     scatter 
 		x=_name_ 
 		y=Col1;
+	xaxis label = 'Grade Level';
+	yaxis label = 'Dropout Rate';
 run;
 footnote;
 title;
@@ -167,19 +172,26 @@ Limitations: There are many null values in the PctGE21 in the act17 table.
 These values correspond with schools that may not perform well. An additional 
 analysis should be done on schools that have null values in this column. They 
 won't be done in the primary analysis because they need to be filtered out. 
-;
 
-/* 
-In order to compare the different percentages of students who get good ACT 
-scores, we can make two levels: schools that have zero and non-zero dropout
-rates. The means of students with good ACT scores are found for these levels.
-*/
+Methodology: In order to compare the different percentages of students who get 
+good ACT scores, two levels are made, each with a proc sql statement with a 
+different where clause: schools that have zero and non-zero dropout rates. The 
+means and standard deviations of students with good ACT scores are found for 
+these levels. Regression is done with proc reg to compare the dropout rate with
+the percent of students who have an ACT score above 21 at each school. Use
+proc sql to compare mean dropout rate from schools who do not have values for
+Percent_with_ACT_above_21 reported.
+
+Followup steps: Attempt to transform the data to be more normal in order to 
+make an accurate regression model that can be used to do more than describe the
+trend, but can make predictions. 
+;
 
 title4 'Average for Schools Having Zero Dropouts';
 proc sql;
     select
-		 avg(Percent_with_ACT_above_21) as avg,
-		 std(Percent_with_ACT_above_21) as sd
+		 avg(Percent_with_ACT_above_21) as Average,
+		 std(Percent_with_ACT_above_21) as SD
     from
         analytical_merged
 	where 
@@ -192,8 +204,8 @@ title 'Average for Schools Having Dropouts';
 footnote 'Percent of ACT scores above 21 are lower in schools reporting dropouts';
 proc sql;
     select
-		 avg(Percent_with_ACT_above_21) as avg,
-		 std(Percent_with_ACT_above_21) as sd
+		 avg(Percent_with_ACT_above_21) as Average,
+		 std(Percent_with_ACT_above_21) as SD
     from
         analytical_merged
 	where 
@@ -204,12 +216,11 @@ footnote;
 title;
 
 /*
-Regression is done to compare the dropout rate with the percent of students 
-who have an ACT score above 21 at each school.
+Regression analysis
 */
 
 footnote 'The regression results in a negative coefficient, which is significant. This confirms the stratification of Yes vs No dropouts result: higher rates of ACT scores greater than 21 will result in fewer dropouts. However, this model should not be used for prediction because the r-squared value is very low, meaning that most of the variance is not explained by this model. It also would assume that the data is distributed normally';
-proc reg 
+proc reg
     data = analytical_merged;
     model droprate = Percent_with_ACT_above_21;
 run;
