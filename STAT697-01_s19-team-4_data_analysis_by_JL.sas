@@ -73,9 +73,9 @@ run;
 proc report data=cde_anlytic_file_by_FRPM_Incr(obs=10);
     columns
         School
-    District
-    Percent_Eligible_FRPM_K12_1516
-    Percent_Eligible_FRPM_K12_1617
+        District
+        Percent_Eligible_FRPM_K12_1516
+        Percent_Eligible_FRPM_K12_1617
         FRPM_Percentage_point_Increase
     ;
 run;
@@ -238,14 +238,6 @@ run;
 title;
 footnote;
 
-proc sgplot data=cde_analytic_file;
-    scatter
-        x=Percent_Eligible_FRPM_K12_1617
-        y=Rate_of_Dropout
-    ;
-run;
-
-
 
 *
 Question: Can "Percent (%) Eligible FRPM (K-12)" be used to predict the number
@@ -318,7 +310,7 @@ data or a rolling average of previous years' data as a proxy.
 * calculate the first 10 school that the drop rate is lowest;
 
 proc sql outobs=10;
-        select
+    select
          School
         ,District
         ,Number_of_ACT_Takers/* NumTstTakr from act17 */
