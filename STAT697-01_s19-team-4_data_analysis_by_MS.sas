@@ -80,7 +80,8 @@ proc sql outobs = 3;
 		droprate <1
 	order by 
 		droprate desc
-	;
+;
+quit;
 title;
 footnote;
 
@@ -132,7 +133,8 @@ create table grade_levels as
 		avg(drop12) as Twelfth
 	from 
 		analytical_merged
-	;
+;
+quit;
 
 proc transpose 
 	data = grade_levels
@@ -196,7 +198,8 @@ proc sql;
         analytical_merged
 	where 
 		droprate = 0
-    ;
+;
+quit;
 title;
 
 title 'Average for Schools Having Dropouts';
@@ -209,7 +212,8 @@ proc sql;
         analytical_merged
 	where 
 		droprate > 0.00001
-    ;
+;
+quit;
 footnote;
 title;
 
@@ -235,6 +239,7 @@ proc sql;
 		droprate is not missing 
 		and Percent_with_ACT_above_21 is missing
 ;
+quit;
 
 title'Mean Dropout - Schools Reporting ACT';
 footnote'There are many schools that have not reported PctGE - the column that has the percent of students getting a score above 21 on the ACT. These queries show that the dropout rates are 0.133 for schools that do not report pctGE and 0.010 for schools that do.';
@@ -246,5 +251,5 @@ proc sql;
 	where 
 		droprate is not missing 
 		and Percent_with_ACT_above_21 is not missing
-    ;
+;
 quit;
