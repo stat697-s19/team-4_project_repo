@@ -399,7 +399,7 @@ quit;
 
 *converting column from character to numeric;
 data act17; set act17;
-PctGE= input(PctGE21, ? comma24.);
+PctGE= input(PctGE21,?? best5.);
 run;
 
 *creating analytical dataset named "analytical_merged";
@@ -412,7 +412,7 @@ proc sql;
              AS District
             ,A.VAR20 format percent12.2
              label "FRPM Percent Eligible 15-16"
-            ,B.VAR20 format percent12.2
+            ,B.percent format percent12.2
              label "FRPM Percent Eligible 16-17"
             ,D.Number_took_ACT
              label "Number of ACT Takers in 2017"
@@ -457,7 +457,7 @@ proc sql;
                      length 14
                     ,District_Name
                      AS District
-                    ,VAR20
+                    ,VAR20 as percent
                 from
                     Frpm1617
             ) as B
