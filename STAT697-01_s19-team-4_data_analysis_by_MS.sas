@@ -44,15 +44,16 @@ data analytical_merged;
     droprate = DTOT / ETOT;
 run;
 
-title4 'Dropout Rate by Gender'; footnote '';
+title4 'Dropout Rate by Gender'; 
+footnote '';
 proc report 
     data=analytical_merged
     (keep=droprate gender);
     column droprate gender;
     define gender / group width=13
-          'Gender';
+        'Gender';
     define droprate / mean format=best8.7
-          'Average Dropout Rate' width=11;
+        'Average Dropout Rate' width=11;
 run;
 title;
 footnote;
@@ -64,22 +65,24 @@ proc report
     (keep=droprate gender);
     column droprate gender;
     define gender / group width=10
-          'Gender';
+        'Gender';
     define droprate / analysis std format=best8.7
-          'Standard Deviation' width =11;
+        'Standard Deviation' width =11;
 run;
+title;
+footnote;
 
 title 'Top Schools for Overall Dropout';
 footnote 'These are the top 3 schools (in order) having the highest dropout rate';
 proc sql outobs = 3;
-	select
-		School label 'Schools With Highest Dropout'
-	from 
-		analytical_merged
-	where 
-		droprate <1
-	order by 
-		droprate desc
+    select
+        School label 'Schools With Highest Dropout'
+    from 
+        analytical_merged
+    where 
+        droprate <1
+    order by 
+        droprate desc
 ;
 quit;
 title;
@@ -93,6 +96,7 @@ footnote;
 title1 justify=left 'Question: Which grade has the highest rate of dropouts?';
 
 title2 justify=left 'Rationale: By comparing the dropout rate, we can find see which grades are most vulnerable to dropping out, and direct more experienced teachers, counseling and resources to those grades.';
+
 title3;
 
 *
@@ -113,32 +117,32 @@ to call the data more efficiently and free up memory.
 ;
 
 data analytical_merged;
-   set analytical_merged;
-	   drop7 = D7 / E7;
-	   drop8 = D8 / E8;
-	   drop9 = D9 / E9;
-	   drop10 = D10 / E10;
-	   drop11 = D11 / E11;
-	   drop12 = D12 / E12;
+    set analytical_merged;
+        drop7 = D7 / E7;
+        drop8 = D8 / E8;
+        drop9 = D9 / E9;
+        drop10 = D10 / E10;
+        drop11 = D11 / E11;
+        drop12 = D12 / E12;
 run;
 
 proc sql;
 create table grade_levels as 
-	select 
-		avg(drop7) as Seventh,
-		avg(drop8) as Eighth,
-		avg(drop9) as Ninth,
-		avg(drop10) as Tenth,
-		avg(drop11) as Eleventh,
-		avg(drop12) as Twelfth
-	from 
-		analytical_merged
+    select 
+        avg(drop7) as Seventh,
+        avg(drop8) as Eighth,
+        avg(drop9) as Ninth,
+        avg(drop10) as Tenth,
+        avg(drop11) as Eleventh,
+        avg(drop12) as Twelfth
+    from 
+        analytical_merged
 ;
 quit;
 
 proc transpose 
-	data = grade_levels
-	out = grade_levels;
+    data = grade_levels
+    out = grade_levels;
 run;
 
 title4 'Mean Dropout by Grade';
@@ -146,10 +150,10 @@ footnote 'Dropout rate is highest at later years of students education.';
 proc sgplot 
     data = grade_levels;
     scatter 
-		x=_name_ 
-		y=Col1;
-	xaxis label = 'Grade Level';
-	yaxis label = 'Dropout Rate';
+        x=_name_ 
+        y=Col1;
+    xaxis label = 'Grade Level';
+    yaxis label = 'Dropout Rate';
 run;
 footnote;
 title;
@@ -162,6 +166,7 @@ title;
 title1 justify=left 'Question: How does the rate of dropout compare to the rate of people with a passing score on the act?';
 
 title2 justify=left "Rationale: This explores whether dropout is related to lack of understanding of academic content, or if it is due to other factors. Performance on ACT can be a measure of a school's ability to drill certian skills, and without those, students may dropout.";
+
 title3;
 
 *
@@ -192,26 +197,27 @@ trend, but can make predictions.
 title4 'Average for Schools Having Zero Dropouts';
 proc sql;
     select
-		 avg(Percent_with_ACT_above_21) as Average,
-		 std(Percent_with_ACT_above_21) as SD
+        avg(Percent_with_ACT_above_21) as Average,
+        std(Percent_with_ACT_above_21) as SD
     from
         analytical_merged
-	where 
-		droprate = 0
+    where 
+        droprate = 0
 ;
 quit;
+footnote;
 title;
 
 title 'Average for Schools Having Dropouts';
 footnote 'Percent of ACT scores above 21 are lower in schools reporting dropouts';
 proc sql;
     select
-		 avg(Percent_with_ACT_above_21) as Average,
-		 std(Percent_with_ACT_above_21) as SD
+        avg(Percent_with_ACT_above_21) as Average,
+        std(Percent_with_ACT_above_21) as SD
     from
         analytical_merged
-	where 
-		droprate > 0.00001
+    where 
+        droprate > 0.00001
 ;
 quit;
 footnote;
@@ -227,29 +233,32 @@ proc reg
     model droprate = Percent_with_ACT_above_21;
 run;
 footnote;
-title;
 
-title'Mean Dropout - Schools Not Reporting ACT'; footnote'';
+title 'Mean Dropout - Schools Not Reporting ACT'; 
+footnote'';
 proc sql;
     select
         mean(droprate) as Mean_for_missing_pctge
     from
         analytical_merged
-	where 
-		droprate is not missing 
-		and Percent_with_ACT_above_21 is missing
+    where 
+        droprate is not missing 
+        and Percent_with_ACT_above_21 is missing
 ;
 quit;
+title;
 
-title'Mean Dropout - Schools Reporting ACT';
+title 'Mean Dropout - Schools Reporting ACT';
 footnote'There are many schools that have not reported PctGE - the column that has the percent of students getting a score above 21 on the ACT. These queries show that the dropout rates are 0.133 for schools that do not report pctGE and 0.010 for schools that do.';
 proc sql;
     select
-    	mean(droprate) as Mean_for_reported_pctge
+        mean(droprate) as Mean_for_reported_pctge
     from
         analytical_merged
-	where 
-		droprate is not missing 
-		and Percent_with_ACT_above_21 is not missing
+    where 
+        droprate is not missing 
+        and Percent_with_ACT_above_21 is not missing
 ;
 quit;
+title;
+footnote;
