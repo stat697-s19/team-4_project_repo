@@ -22,7 +22,7 @@ title2 justify= left
 'Rationale: This should help identify school districts to consider for new outreach based upon increasing and decreasing child-poverty levels.'
 ;
 footnote1 justify= left
-'From the table, we can find that the range of the FRPM Eligibility Rate Percentage Point increase is 91.67%-62.5%.'
+'From the table, we can find that the range of the FRPM Eligibility Rate Percentage Point increase is 62.5%-91.67%.'
 ;
 footnote2 justify= left
 'We could easily find that the top one, Camp Glenwood school, has a lower FRPM Eligibility Rate in AY2015-16, which caused the fast increase of FRPM Eligibility Rate.'
@@ -83,6 +83,23 @@ run;
 title;
 footnote;
 
+title1
+'Plot top ten schools that experienced the biggest increase in "Percent (%) Eligible Free (K-12)" between AY2015-16 and AY2016-17'
+;
+
+footnote1
+"In the above plot, we can see the top 1 school is much higher than other 9 schools, and we should consider if treat it as outliers."
+;
+
+proc sgplot data=cde_anlytic_file_by_FRPM_Incr(obs=10);
+    vbar School/ RESPONSE= FRPM_Percentage_point_Increase
+    CATEGORYORDER=RESPDESC 
+    ;
+run;
+
+* clear titles/footnotes;
+title;
+footnote;
 
 
 *******************************************************************************;
@@ -295,7 +312,9 @@ of high dropout students, if so, providing a strong conformation for the
 negative relationship between the number of ACT taker and dropput students.
 
 Note: This compares the column NUMTSTTAKR from act17 to the column TTD and TTE
-from drop17.
+from drop17.There is maybe a warning message:"WARNING: Statement terminated early 
+due to OUTOBS=10 option." in log because of outobs= 10 code, you do not need to 
+worry about it.
 
 Limitations: Values of NUMTSTTAKR and TOTAL(DTOT) equal to zero should be excluded
 from this analysis, since they are potentially missing data values.
@@ -337,3 +356,5 @@ quit;
 * clear titles/footnotes;
 title;
 footnote;
+
+
