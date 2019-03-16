@@ -16,7 +16,7 @@ from which all data analyses below begin;
 *******************************************************************************;
 
 title1 justify= left
-'Question: What are the top ten school that experienced the biggest increase in "Percent (%) Eligible Free (K-12)" between AY2015-16 and AY2016-17?'
+'Question: What are the top ten schools that experienced the biggest increase in "Percent (%) Eligible Free (K-12)" between AY2015-16 and AY2016-17?'
 ;
 title2 justify= left
 'Rationale: This should help identify school districts to consider for new outreach based upon increasing and decreasing child-poverty levels.'
@@ -25,13 +25,13 @@ footnote1 justify= left
 'From the table, we can find that the range of the FRPM Eligibility Rate Percentage Point increase is 91.67%-62.5%.'
 ;
 footnote2 justify= left
-'We could easily find that the first one Camp Glenwood school had a very lower FRPM Eligibility Rate in AY2015-16, which caused the fast increase of FRPM Eligibility Rate.'
+'We could easily find that the top one, Camp Glenwood school, has a lower FRPM Eligibility Rate in AY2015-16, which caused the fast increase of FRPM Eligibility Rate.'
 ;
 footnote3 justify= left
-'We discover that the 6th school even has 68.89% increase Rate, while the factor is that the FRPM Eligibility of Rate of both AY2015 and AY 2016 are lower than other school.'
+'We discover that the 6th school even has 68.89% increase Rate, while the factor is that the FRPM Eligibility of Rate of both AY2015-16 and AY2016-17 are lower than other schools.'
 ;
 footnote4 justify= left
-'Based on above analysis, we had better to consider if we should include the Camp Glenwood school and Rising Sun school or consider them as outliers in our further study.'
+'Based on above analysis, it is better to consider if we should include the Camp Glenwood school and Rising Sun school in our further study and consider them as outliers.'
 ;
 
 
@@ -224,7 +224,7 @@ title1
 ;
 
 footnote1
-"In the above plot, we can see there is not very strong increase Rate_of_Dropout as Percent_Eligible_FRPM_K12_1617 increase as above plot, maybe because of the correlation is 0.17"
+"In the above plot, we can see there is not very strong increase Rate_of_Dropout with Percent_Eligible_FRPM_K12_1617 increase as above plot, maybe because of the correlation is 0.17"
 ;
 
 proc sgplot data=cde_analytic_file;
@@ -281,6 +281,9 @@ footnote1 justify= left
 ;
 footnote2 justify= left
 'This information strongly proof that the more students dropout from school the less number of students taking ACT test, the result is the same with our common sense.'
+;
+footnote3 justify= left
+'This table also indicates that maybe there is threshold line such as once the droprate reaches a point then no student would take the ACT, then it makes sense why the above plot does not show strong increase trend.'
 ;
 
 *
