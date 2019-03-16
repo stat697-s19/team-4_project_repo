@@ -277,7 +277,7 @@ proc sql;
             left join
             (
                 select
-                    CDS_CODE
+                     CDS_CODE
                     ,count(*) as row_count_for_unique_id_value
                 from
                     dropouts17_raw
