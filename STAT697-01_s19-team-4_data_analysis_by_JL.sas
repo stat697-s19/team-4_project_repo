@@ -271,7 +271,7 @@ footnote;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
 title1 justify= left
-'Question: What is the top ten schools were the number of high dropout? and the corresponding number of ACT takers'?
+'Question: What is the top ten schools were the number of high dropout? and the corresponding number of ACT takers?'
 ;
 title2 justify= left
 'Rationale: This would help identify whether ACT are associated with the number of high dropout students, if so, providing a strong conformation for the negative relationship between the number of ACT taker and dropput students.'
@@ -284,7 +284,7 @@ footnote2 justify= left
 ;
 
 *
-Question: Whatâ€™s the top ten schools were the number of high dropout? and
+Question: What is the top ten schools were the number of high dropout? and
 the corresponding number of ACT takers'?
 
 Rationale: This would help identify whether ACT are associated with the number
