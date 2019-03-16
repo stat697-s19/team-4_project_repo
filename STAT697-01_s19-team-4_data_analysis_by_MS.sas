@@ -41,7 +41,7 @@ determine if performance is changing or if interventions are effective/needed.
 
 data analytical_merged;
     set analytical_merged;
-    droprate = DTOT / ETOT;
+    droprate =ifn(ETOT=0,0,DTOT / ETOT);
 run;
 
 title4 'Dropout Rate by Gender'; 
