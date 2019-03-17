@@ -4,11 +4,10 @@
 *******************************************************************************;
 
 * set relative file import path to current directory (using standard SAS trick);
-X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget
-(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
+X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
 
 * load external file that will generate final analytic file;
-%include '.\STAT697-01_s19_team_4_data_preparation.sas';
+%include '.STAT697-01_s19-team-4_data_preparation.sas';
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -41,7 +40,12 @@ determine if performance is changing or if interventions are effective/needed.
 
 data analytical_merged;
     set analytical_merged;
-    droprate =ifn(ETOT=0,0,DTOT / ETOT);
+	if
+        ETOT ne 0
+    then
+        droprate = DTOT / ETOT;
+    else
+        call missing(droprate);
 run;
 
 title4 'Dropout Rate by Gender'; 
@@ -227,11 +231,13 @@ title;
 Regression analysis
 */
 
-footnote 'The regression results in a negative coefficient, which is significant. This confirms the stratification of Yes vs No dropouts result: higher rates of ACT scores greater than 21 will result in fewer dropouts. However, this model should not be used for prediction because the r-squared value is very low, meaning that most of the variance is not explained by this model. It also would assume that the data is distributed normally';
-proc reg
-    data = analytical_merged;
+footnote 'The regression results in a negative coefficient, which is significant. This confirms the stratification of Yes vs No dropouts result: higher rates of ACT scores greater than 21 will result in fewer dropouts. However, this model should not be used for prediction because the r-squared value is very low, meaning that most of the variance is not explained by this model. It also would assume that the data is distributed normally.';
+proc reg 
+    data = analytical_merged 
+    plots = none;
     model droprate = Percent_with_ACT_above_21;
 run;
+quit;
 footnote;
 
 title 'Mean Dropout - Schools Not Reporting ACT'; 
