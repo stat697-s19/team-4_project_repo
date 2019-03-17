@@ -122,12 +122,42 @@ to call the data more efficiently and free up memory.
 
 data analytical_merged;
     set analytical_merged;
+    if
+        E7 ne 0 and E7 ne .
+    then 
         drop7 = D7 / E7;
+    else
+        call missing(drop7);
+    if
+        E8 ne 0 and E8 ne .
+    then 
         drop8 = D8 / E8;
+    else
+        call missing(drop8);
+    if
+        E9 ne 0 and E9 ne .
+    then 
         drop9 = D9 / E9;
+    else
+        call missing(drop9);
+    if
+        E10 ne 0 and E10 ne .
+    then 
         drop10 = D10 / E10;
+    else
+        call missing(drop10);
+    if
+        E11 ne 0 and E11 ne .
+    then 
         drop11 = D11 / E11;
+    else
+        call missing(drop11);
+    if
+        E12 ne 0 and E12 ne .
+    then 
         drop12 = D12 / E12;
+    else
+        call missing(drop12);
 run;
 
 proc sql;
