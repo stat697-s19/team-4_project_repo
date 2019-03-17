@@ -7,7 +7,7 @@
 X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
 
 * load external file that will generate final analytic file;
-%include '.STAT697-01_s19-team-4_data_preparation.sas';
+%include '.\STAT697-01_s19-team-4_data_preparation.sas';
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
